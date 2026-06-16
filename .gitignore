@@ -2,3 +2,9 @@ exports/ep001_full_frames_10fps/frames/
 exports/ep001_full_frames_10fps/keyframes/
 exports/ep001_full_frames_10fps/*.mp4
 exports/ep001_full_frames_10fps/*.wav
+exports/ep001_production_clean_10fps/frames/
+exports/ep001_production_clean_10fps/keyframes/
+exports/ep001_production_clean_10fps/voices/
+exports/ep001_production_clean_10fps/*.mp4
+exports/ep001_production_clean_10fps/*.wav
+exports/ep001_production_clean_10fps/*.m4a
