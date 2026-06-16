@@ -30,17 +30,6 @@ SCENES = [
     (162, 180, "ep001_05_resolution.png", "모찌: 다음엔 더 늦게, 더 잘 볼래."),
 ]
 
-VOICE_EVENTS = [
-    (2.6, "line_01_mochi.wav"),
-    (24.0, "line_02_zumu.wav"),
-    (61.0, "line_03_mochi.wav"),
-    (91.0, "line_04_mochi.wav"),
-    (144.0, "line_05_zumu.wav"),
-    (164.0, "line_06_mochi.wav"),
-    (176.0, "line_07_mochi.wav"),
-]
-
-
 def font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     candidates = [
         "C:/Windows/Fonts/malgunbd.ttf",
@@ -83,6 +72,55 @@ def cover(im: Image.Image, scale: float, dx: float, dy: float) -> Image.Image:
     frame = Image.new("RGB", (W, H), (5, 7, 16))
     frame.paste(resized, (x, y))
     return frame
+
+
+def paste_living_crop(
+    frame: Image.Image,
+    source: Image.Image,
+    box: tuple[int, int, int, int],
+    t: float,
+    amp_x: float,
+    amp_y: float,
+    phase: float = 0,
+    scale_amp: float = 0.006,
+) -> None:
+    """Animate only a soft local character region, leaving the set locked."""
+    x1, y1, x2, y2 = box
+    crop = source.crop(box).convert("RGBA")
+    w, h = crop.size
+    mask = Image.new("L", (w, h), 0)
+    d = ImageDraw.Draw(mask)
+    d.ellipse((4, 4, w - 4, h - 4), fill=255)
+    mask = mask.filter(ImageFilter.GaussianBlur(9))
+    crop.putalpha(mask)
+
+    breath = math.sin(t * math.tau * .62 + phase)
+    sx = 1 + scale_amp * breath
+    sy = 1 + scale_amp * 1.35 * breath
+    nw, nh = max(1, int(w * sx)), max(1, int(h * sy))
+    crop = crop.resize((nw, nh), Image.Resampling.LANCZOS)
+    dx = int(math.sin(t * math.tau * .28 + phase) * amp_x)
+    dy = int(math.sin(t * math.tau * .55 + phase) * amp_y)
+    px = int(x1 - (nw - w) / 2 + dx)
+    py = int(y1 - (nh - h) / 2 + dy)
+    frame.alpha_composite(crop, (px, py))
+
+
+def draw_blink_and_mouth(layer: Image.Image, scene_idx: int, t: float) -> None:
+    d = ImageDraw.Draw(layer)
+    blink = math.sin(t * math.tau * .38) > .965
+    if not blink:
+        return
+    # Soft eyelid strokes, scene-specific approximate positions.
+    coords = {
+        0: [((164, 382), (188, 385)), ((218, 365), (244, 362))],
+        2: [((330, 360), (362, 360)), ((430, 360), (462, 360))],
+        3: [((358, 278), (398, 282)), ((474, 278), (514, 282)), ((755, 332), (785, 335)), ((828, 332), (858, 335))],
+        4: [((382, 296), (420, 298)), ((492, 296), (532, 298)), ((728, 316), (754, 318)), ((786, 316), (812, 318))],
+        5: [((382, 296), (420, 298)), ((492, 296), (532, 298))]
+    }.get(scene_idx, [])
+    for a, b in coords:
+        d.line((a, b), fill=(70, 38, 32, 170), width=5)
 
 
 def draw_star(draw: ImageDraw.ImageDraw, cx: float, cy: float, r1: float, r2: float, fill):
@@ -150,95 +188,40 @@ def badge_layer(t: float, scene_idx: int) -> Image.Image:
 def render_frame(t: float, imgs: dict[str, Image.Image]) -> np.ndarray:
     scene_idx, start, end, img_name, sub, p = scene_at(t)
     ep = ease(p)
+    # Almost locked camera. Life comes from characters/effects, not fake global panning.
     cam = [
-        (1.03 + .11 * ep, -52 + 110 * ep, 6 - 34 * ep),
-        (1.10 + .04 * math.sin(p * math.pi), 34 - 92 * ep, -18),
-        (1.13, -74 + 154 * ep, 8 + math.sin(t * 3.0) * 4),
-        (1.06 + .12 * ep, 10, -8 + 30 * ep),
-        (1.07 + .08 * ep, -58 + 102 * ep, -14),
-        (1.18 + .03 * ep, 6, -34),
+        (1.055, -18 + 18 * ep, -8),
+        (1.08, -10, -12),
+        (1.08, 0, 0),
+        (1.05, 0, -6),
+        (1.055, -8, -10),
+        (1.10, 0, -24),
     ][scene_idx]
-    frame = cover(imgs[img_name], cam[0], cam[1], cam[2]).convert("RGBA")
+    base = cover(imgs[img_name], cam[0], cam[1], cam[2]).convert("RGBA")
+    frame = base.copy()
+
+    living_boxes = {
+        0: [((72, 255, 286, 560), 2.0, 5.0, 0.2)],
+        1: [((250, 210, 610, 618), 1.5, 4.0, 0.5), ((690, 205, 1040, 590), 4.0, 7.0, 1.4)],
+        2: [((220, 175, 565, 650), 3.0, 8.0, 0.4)],
+        3: [((260, 120, 570, 650), 1.5, 4.0, 0.2), ((650, 220, 975, 545), 5.0, 8.0, 1.1)],
+        4: [((275, 135, 575, 640), 2.0, 5.0, 0.1), ((640, 210, 945, 560), 5.0, 8.0, 1.0)],
+        5: [((275, 135, 575, 640), 1.5, 4.0, 0.1)],
+    }
+    for box, ax, ay, ph in living_boxes.get(scene_idx, []):
+        paste_living_crop(frame, base, box, t, ax, ay, ph)
 
     # Slight breathing/living light grade.
     color = ImageEnhance.Color(frame).enhance(1.05)
     contrast = ImageEnhance.Contrast(color).enhance(1.03)
     frame = contrast
     frame.alpha_composite(glow_layer(t, scene_idx, p))
+    fx = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    draw_blink_and_mouth(fx, scene_idx, t)
+    frame.alpha_composite(fx)
     frame.alpha_composite(subtitle_layer(sub))
     frame.alpha_composite(badge_layer(t, scene_idx))
     return np.asarray(frame.convert("RGB"))
-
-
-def read_wav(path: Path, sr: int) -> np.ndarray:
-    with wave.open(str(path), "rb") as w:
-        frames = w.readframes(w.getnframes())
-        data = np.frombuffer(frames, dtype=np.int16).astype(np.float32) / 32768.0
-        if w.getnchannels() == 2:
-            data = data.reshape(-1, 2).mean(axis=1)
-        source_sr = w.getframerate()
-    if source_sr != sr:
-        x_old = np.linspace(0, 1, len(data), endpoint=False)
-        x_new = np.linspace(0, 1, int(len(data) * sr / source_sr), endpoint=False)
-        data = np.interp(x_new, x_old, data).astype(np.float32)
-    return data
-
-
-def build_audio() -> None:
-    sr = 44100
-    samples = np.zeros(int(DURATION * sr), dtype=np.float32)
-
-    # Soft ambient bed.
-    t = np.arange(samples.size) / sr
-    samples += 0.015 * np.sin(2 * np.pi * 220 * t)
-    samples += 0.009 * np.sin(2 * np.pi * 330 * t + .6)
-
-    # Door, steps, star tones.
-    for sec, freq, dur, amp in [
-        (22, 660, .18, .08), (22.22, 980, .18, .05),
-        (50, 115, .08, .08), (51.1, 135, .08, .07),
-        (126, 740, .18, .05), (128, 880, .18, .05),
-        (155, 1040, .5, .05), (176, 1320, .35, .04),
-    ]:
-        start = int(sec * sr)
-        n = int(dur * sr)
-        env = np.linspace(1, 0.001, n)
-        tone = amp * np.sin(2 * np.pi * freq * np.arange(n) / sr) * env
-        samples[start:start + n] += tone[: max(0, min(n, samples.size - start))]
-
-    for sec, filename in VOICE_EVENTS:
-        path = TTS / filename
-        if not path.exists():
-            continue
-        data = read_wav(path, sr) * .9
-        start = int(sec * sr)
-        end = min(samples.size, start + data.size)
-        samples[start:end] += data[: end - start]
-
-    samples = np.clip(samples, -1, 1)
-    with wave.open(str(TMP_AUDIO), "wb") as w:
-        w.setnchannels(1)
-        w.setsampwidth(2)
-        w.setframerate(sr)
-        w.writeframes((samples * 32767).astype(np.int16).tobytes())
-
-
-def mux_video_audio() -> None:
-    import imageio_ffmpeg
-    import subprocess
-
-    ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
-    cmd = [
-        ffmpeg, "-y",
-        "-i", str(TMP_VIDEO),
-        "-i", str(TMP_AUDIO),
-        "-c:v", "copy",
-        "-c:a", "aac",
-        "-b:a", "160k",
-        "-shortest",
-        str(OUT),
-    ]
-    subprocess.run(cmd, check=True)
 
 
 def main() -> None:
@@ -260,8 +243,9 @@ def main() -> None:
                 print(f"render {int(t):03d}s / 180s", flush=True)
     finally:
         writer.close()
-    build_audio()
-    mux_video_audio()
+    if OUT.exists():
+        OUT.unlink()
+    TMP_VIDEO.replace(OUT)
     print(OUT)
 
 

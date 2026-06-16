@@ -204,7 +204,7 @@
           <button class="primary" id="play">재생</button>
           <button class="primary" id="showVideo">MP4 영상 보기</button>
           <button id="demo">45초 빠른 검수</button>
-          <button id="voices">캐릭터 목소리</button>
+          <button id="voices" disabled title="전문 캐릭터 보이스 캐스팅 필요">목소리 캐스팅 필요</button>
           <button id="sfx">효과음 테스트</button>
           <button id="overlay">제작 메모 켜기</button>
           <button class="warn" id="jumpEmotion">감정 장면</button>
@@ -217,18 +217,18 @@
 
     <aside class="panel">
       <h1>001. 편의점 자동문에 갇힌 별빛</h1>
-      <p>검수용 파일럿입니다. 단순 도형 애니메이션이 아니라 생성된 고품질 이미지를 기준으로, 카메라 움직임, 빛, 표정 타이밍, 한국어 대사, 어린 캐릭터 목소리, 효과음을 한 번에 확인하게 만들었습니다. MP4 영상 버튼을 누르면 실제 영상 파일로도 볼 수 있습니다.</p>
+      <p>검수용 파일럿입니다. 생성된 고품질 이미지를 기준으로 캐릭터의 국소 움직임, 빛, 표정 타이밍, 한국어 자막을 확인하게 만들었습니다. 로봇 목소리는 제외했고, 최종 목소리는 전문 캐릭터 보이스로 따로 캐스팅해야 합니다.</p>
 
       <h2>3분 안에 실제로 일어나는 이야기</h2>
       <div id="sceneList"></div>
 
       <h2>목소리 아이덴티티</h2>
       <div class="voiceGrid">
-        <div class="voice"><div><b>모찌</b><span>맑고 따뜻한 어린 목소리, 생각할 때 느려짐</span></div><button onclick="speakLine('mochi','잠깐만. 저 별빛이 문 사이에 끼었어. 겁먹은 것 같아.')">듣기</button></div>
-        <div class="voice"><div><b>주무</b><span>빠르고 반짝이는 목소리, 흥분하면 문장이 짧아짐</span></div><button onclick="speakLine('zumu','가자 가자! 내가 빛줄기로 살짝 밀어 볼게!')">듣기</button></div>
-        <div class="voice"><div><b>기조</b><span>차분하고 또렷한 목소리, 원인을 먼저 봄</span></div><button onclick="speakLine('gizo','자동문 센서가 빛을 손님으로 착각했을 가능성이 있어.')">듣기</button></div>
-        <div class="voice"><div><b>피리</b><span>작고 섬세한 목소리, 겁나도 곁에 남음</span></div><button onclick="speakLine('piri','무섭지만, 그 별빛이 혼자 있지 않게 해줄래.')">듣기</button></div>
-        <div class="voice"><div><b>포푸</b><span>폭신하고 밝은 목소리, 분위기를 풀어줌</span></div><button onclick="speakLine('pofu','괜찮아. 천천히 하면 문도 마음을 열 거야!')">듣기</button></div>
+        <div class="voice"><div><b>모찌</b><span>맑고 따뜻한 어린 목소리, 생각할 때 느려짐</span></div><button disabled>캐스팅</button></div>
+        <div class="voice"><div><b>주무</b><span>빠르고 반짝이는 목소리, 흥분하면 문장이 짧아짐</span></div><button disabled>캐스팅</button></div>
+        <div class="voice"><div><b>기조</b><span>차분하고 또렷한 목소리, 원인을 먼저 봄</span></div><button disabled>캐스팅</button></div>
+        <div class="voice"><div><b>피리</b><span>작고 섬세한 목소리, 겁나도 곁에 남음</span></div><button disabled>캐스팅</button></div>
+        <div class="voice"><div><b>포푸</b><span>폭신하고 밝은 목소리, 분위기를 풀어줌</span></div><button disabled>캐스팅</button></div>
       </div>
 
       <h2>움직임/질감 지시</h2>
@@ -511,7 +511,6 @@
       drawMotionNotes(s, p);
       drawSubtitle(s);
       updateUi(s);
-      if (state.playing && !s._spoken && p < .12) speakCurrentScene();
       requestAnimationFrame(render);
     }
 
@@ -569,57 +568,13 @@
       }
     }
 
-    function speakLine(character, text) {
-      if (!("speechSynthesis" in window)) return;
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "ko-KR";
-      const voices = speechSynthesis.getVoices();
-      u.voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("ko")) || voices[0] || null;
-      const profiles = {
-        mochi: { pitch: 1.28, rate: .88 },
-        zumu: { pitch: 1.55, rate: 1.14 },
-        gizo: { pitch: 1.08, rate: .82 },
-        piri: { pitch: 1.36, rate: .76 },
-        pofu: { pitch: 1.22, rate: .96 }
-      };
-      const p = profiles[character] || profiles.mochi;
-      u.pitch = p.pitch;
-      u.rate = p.rate;
-      speechSynthesis.speak(u);
-    }
-    window.speakLine = speakLine;
-
-    function playVoiceSequence() {
-      speechSynthesis.cancel();
-      const lines = scenes.map(s => s.voice);
-      let delay = 0;
-      lines.forEach(([c, text]) => {
-        setTimeout(() => speakLine(c, text), delay);
-        delay += Math.max(1800, text.length * 145);
-      });
-    }
-
-    function speakCurrentScene() {
-      const s = activeScene();
-      if (!s._spoken || Math.abs(s._spokenAt - state.t) > 2) {
-        s._spoken = true;
-        s._spokenAt = state.t;
-        speakLine(s.voice[0], s.voice[1]);
-      }
-    }
+    function playVoiceSequence() {}
 
     document.getElementById("play").onclick = e => {
       ensureAudio();
       state.demo = false;
       state.playing = !state.playing;
       e.currentTarget.textContent = state.playing ? "정지" : "재생";
-      if (state.playing) {
-        scenes.forEach(s => { s._spoken = false; });
-        speakCurrentScene();
-      } else if ("speechSynthesis" in window) {
-        speechSynthesis.cancel();
-      }
     };
     document.getElementById("demo").onclick = () => {
       ensureAudio();
@@ -628,8 +583,6 @@
       state.t = 0;
       document.getElementById("play").textContent = "정지";
       playSfx("mix");
-      scenes.forEach(s => { s._spoken = false; });
-      speakCurrentScene();
     };
     document.getElementById("showVideo").onclick = () => {
       const video = document.getElementById("mp4Player");
