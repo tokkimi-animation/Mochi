@@ -202,6 +202,7 @@
         <input id="scrub" type="range" min="0" max="180" value="0" step=".1" aria-label="timeline">
         <div class="row">
           <button class="primary" id="play">재생</button>
+          <button class="primary" id="showVideo">MP4 영상 보기</button>
           <button id="demo">45초 빠른 검수</button>
           <button id="voices">캐릭터 목소리</button>
           <button id="sfx">효과음 테스트</button>
@@ -210,12 +211,13 @@
           <a class="button" href="preview.html">전체 프리뷰</a>
           <span class="timecode" id="timecode">00:00 / 03:00</span>
         </div>
+        <video id="mp4Player" controls playsinline preload="metadata" poster="assets/pilot_ep001/ep001_pilot_preview_thumb.png" style="display:none;width:100%;border-radius:8px;background:#050711" src="assets/pilot_ep001/ep001_pilot_preview.mp4"></video>
       </div>
     </section>
 
     <aside class="panel">
       <h1>001. 편의점 자동문에 갇힌 별빛</h1>
-      <p>검수용 파일럿입니다. 단순 도형 애니메이션이 아니라 생성된 고품질 이미지를 기준으로, 카메라 움직임, 빛, 표정 타이밍, 한국어 대사, 어린 캐릭터 목소리, 효과음을 한 번에 확인하게 만들었습니다.</p>
+      <p>검수용 파일럿입니다. 단순 도형 애니메이션이 아니라 생성된 고품질 이미지를 기준으로, 카메라 움직임, 빛, 표정 타이밍, 한국어 대사, 어린 캐릭터 목소리, 효과음을 한 번에 확인하게 만들었습니다. MP4 영상 버튼을 누르면 실제 영상 파일로도 볼 수 있습니다.</p>
 
       <h2>3분 안에 실제로 일어나는 이야기</h2>
       <div id="sceneList"></div>
@@ -509,6 +511,7 @@
       drawMotionNotes(s, p);
       drawSubtitle(s);
       updateUi(s);
+      if (state.playing && !s._spoken && p < .12) speakCurrentScene();
       requestAnimationFrame(render);
     }
 
@@ -597,11 +600,26 @@
       });
     }
 
+    function speakCurrentScene() {
+      const s = activeScene();
+      if (!s._spoken || Math.abs(s._spokenAt - state.t) > 2) {
+        s._spoken = true;
+        s._spokenAt = state.t;
+        speakLine(s.voice[0], s.voice[1]);
+      }
+    }
+
     document.getElementById("play").onclick = e => {
       ensureAudio();
       state.demo = false;
       state.playing = !state.playing;
       e.currentTarget.textContent = state.playing ? "정지" : "재생";
+      if (state.playing) {
+        scenes.forEach(s => { s._spoken = false; });
+        speakCurrentScene();
+      } else if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+      }
     };
     document.getElementById("demo").onclick = () => {
       ensureAudio();
@@ -610,6 +628,13 @@
       state.t = 0;
       document.getElementById("play").textContent = "정지";
       playSfx("mix");
+      scenes.forEach(s => { s._spoken = false; });
+      speakCurrentScene();
+    };
+    document.getElementById("showVideo").onclick = () => {
+      const video = document.getElementById("mp4Player");
+      video.style.display = video.style.display === "none" ? "block" : "none";
+      if (video.style.display === "block") video.play().catch(() => {});
     };
     document.getElementById("voices").onclick = playVoiceSequence;
     document.getElementById("sfx").onclick = () => playSfx("mix");
