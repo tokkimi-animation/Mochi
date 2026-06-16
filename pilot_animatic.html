@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>모찌의 모험 - 파일럿 애니매틱</title>
+  <style>
+    :root {
+      --sky: #151b34;
+      --night: #080b14;
+      --glass: rgba(198,236,255,.18);
+      --line: rgba(255,255,255,.18);
+      --text: #fff8e8;
+      --muted: #b8c4dc;
+      --gold: #ffd969;
+      --pink: #ff9db7;
+      --blue: #73d7ff;
+      --orange: #ff9b43;
+      --green: #69e0a3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #10131a;
+      color: var(--text);
+      font-family: "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+    }
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) 360px;
+      gap: 18px;
+      padding: 18px;
+    }
+    .stage-shell, .side {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #171d2b, #0f131e);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      overflow: hidden;
+    }
+    .stage {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 78% 12%, rgba(255,216,124,.24), transparent 16%),
+        linear-gradient(180deg, #192247 0%, #101424 40%, #070911 100%);
+    }
+    .street {
+      position: absolute;
+      inset: 64% 0 0;
+      background:
+        radial-gradient(ellipse at 45% 20%, rgba(114,213,255,.16), transparent 30%),
+        linear-gradient(180deg, #22293a, #12161f);
+    }
+    .reflection {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      bottom: 6%;
+      height: 18%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(91,194,255,.24), transparent 62%);
+      filter: blur(1px);
+      animation: shimmer 2.4s ease-in-out infinite;
+    }
+    .store {
+      position: absolute;
+      left: 12%;
+      top: 10%;
+      width: 76%;
+      height: 58%;
+      border-radius: 12px 12px 4px 4px;
+      background: linear-gradient(180deg, #222b40, #111827);
+      border: 2px solid rgba(255,255,255,.18);
+      box-shadow: 0 0 60px rgba(96,203,255,.14);
+    }
+    .sign {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      top: 5%;
+      height: 16%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--green), #fff3a0 48%, #4eb6ff);
+      color: #10202e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      letter-spacing: 0;
+      font-size: clamp(18px, 3vw, 34px);
+      box-shadow: 0 0 26px rgba(255,239,135,.55);
+      animation: signPulse 3s ease-in-out infinite;
+    }
+    .door {
+      position: absolute;
+      left: 42%;
+      top: 28%;
+      width: 16%;
+      height: 65%;
+      border: 2px solid rgba(255,255,255,.34);
+      background: linear-gradient(90deg, rgba(154,224,255,.2), rgba(255,255,255,.06));
+      overflow: hidden;
+    }
+    .door::before, .door::after {
+      content: "";
+      position: absolute;
+      inset: 0 50% 0 0;
+      background: var(--glass);
+      border-right: 1px solid rgba(255,255,255,.3);
+      animation: doorLeft 8s ease-in-out infinite;
+      transform-origin: left center;
+    }
+    .door::after {
+      inset: 0 0 0 50%;
+      border-right: 0;
+      border-left: 1px solid rgba(255,255,255,.3);
+      animation-name: doorRight;
+      transform-origin: right center;
+    }
+    .shelves {
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      top: 31%;
+      height: 43%;
+      display: flex;
+      justify-content: space-between;
+      opacity: .85;
+    }
+    .shelf {
+      width: 22%;
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.12);
+      position: relative;
+    }
+    .shelf::before, .shelf::after {
+      content: "";
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 5px;
+      background: rgba(255,255,255,.18);
+      top: 36%;
+      border-radius: 99px;
+      box-shadow: 0 44px 0 rgba(255,255,255,.14);
+    }
+    .star-frag {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: var(--gold);
+      clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 56%,79% 91%,50% 70%,21% 91%,32% 56%,2% 35%,39% 35%);
+      filter: drop-shadow(0 0 10px #ffd969);
+      animation: starChase 8s ease-in-out infinite;
+    }
+    .star-frag.f2 { animation-delay: .4s; scale: .82; }
+    .star-frag.f3 { animation-delay: .8s; scale: 1.1; }
+    .mochi {
+      position: absolute;
+      width: 112px;
+      height: 138px;
+      left: 20%;
+      bottom: 8%;
+      animation: mochiPath 8s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    .mochi .head {
+      position: absolute;
+      left: 11px;
+      top: 0;
+      width: 90px;
+      height: 82px;
+      border-radius: 50% 50% 45% 45%;
+      background: radial-gradient(circle at 32% 28%, #fff, #fff6df 68%, #eadfc8);
+      box-shadow: inset -10px -12px 18px rgba(113,87,51,.12), 0 8px 18px rgba(0,0,0,.22);
+      animation: breatheHead 1.8s ease-in-out infinite;
+    }
+    .horn {
+      position: absolute;
+      width: 30px;
+      height: 42px;
+      top: -15px;
+      background: #ffe7a2;
+      border-radius: 50% 50% 20% 50%;
+      box-shadow: inset -4px -3px 7px rgba(154,113,38,.18);
+      animation: hornLag 1.8s ease-in-out infinite;
+    }
+    .horn.left { left: 9px; transform: rotate(-35deg); }
+    .horn.right { right: 9px; transform: scaleX(-1) rotate(-35deg); }
+    .eye {
+      position: absolute;
+      top: 32px;
+      width: 19px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 22%, #fff 0 13%, #b86b2b 15% 44%, #4b230f 60%);
+    }
+    .eye.left { left: 24px; }
+    .eye.right { right: 24px; }
+    .cheek {
+      position: absolute;
+      top: 53px;
+      width: 18px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,139,165,.65);
+      filter: blur(.2px);
+    }
+    .cheek.left { left: 13px; }
+    .cheek.right { right: 13px; }
+    .mouth {
+      position: absolute;
+      left: 43px;
+      top: 56px;
+      width: 16px;
+      height: 9px;
+      border-radius: 0 0 20px 20px;
+      border-bottom: 3px solid #764333;
+      animation: mouthTalk 8s steps(1) infinite;
+    }
+    .body {
+      position: absolute;
+      left: 21px;
+      top: 65px;
+      width: 70px;
+      height: 74px;
+      border-radius: 48% 48% 42% 42%;
+      background: radial-gradient(circle at 35% 20%, #fffdf0, #f5ead3 80%);
+      box-shadow: inset -9px -11px 16px rgba(113,87,51,.12);
+      animation: breatheBody 1.8s ease-in-out infinite;
+    }
+    .belly-star {
+      position: absolute;
+      left: 25px;
+      top: 28px;
+      width: 24px;
+      height: 24px;
+      background: var(--gold);
+      clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 56%,79% 91%,50% 70%,21% 91%,32% 56%,2% 35%,39% 35%);
+      filter: drop-shadow(0 0 12px #ffd969);
+      animation: bellyPulse 2.1s ease-in-out infinite;
+    }
+    .arm, .leg {
+      position: absolute;
+      background: #f8eed8;
+      border-radius: 999px;
+      box-shadow: inset -5px -7px 9px rgba(113,87,51,.1);
+    }
+    .arm { width: 22px; height: 48px; top: 76px; }
+    .arm.left { left: 6px; transform: rotate(18deg); animation: armReach 8s ease-in-out infinite; }
+    .arm.right { right: 6px; transform: rotate(-18deg); }
+    .leg { width: 22px; height: 30px; bottom: 0; }
+    .leg.left { left: 33px; }
+    .leg.right { right: 33px; }
+    .zumu {
+      position: absolute;
+      width: 82px;
+      height: 82px;
+      left: 68%;
+      bottom: 21%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 25%, #9ff3ff, #4ab9e4 63%, #2671b5);
+      box-shadow: inset -9px -10px 16px rgba(10,49,95,.22), 0 0 20px rgba(115,215,255,.55);
+      animation: zumuFly 8s ease-in-out infinite;
+    }
+    .zumu::before {
+      content: "";
+      position: absolute;
+      width: 96px;
+      height: 36px;
+      right: 64px;
+      top: 30px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, transparent, rgba(130,232,255,.7), rgba(255,255,255,.18));
+      filter: blur(2px);
+      animation: tailGlow 1.4s ease-in-out infinite;
+    }
+    .z-eye {
+      position: absolute;
+      top: 28px;
+      width: 16px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 20%, #fff 0 15%, #ffb450 17% 58%, #6d2c10 70%);
+    }
+    .z-eye.left { left: 21px; }
+    .z-eye.right { right: 21px; }
+    .z-mouth {
+      position: absolute;
+      left: 35px;
+      top: 53px;
+      width: 16px;
+      height: 9px;
+      border-radius: 0 0 18px 18px;
+      background: #5d2438;
+      animation: zTalk 8s steps(1) infinite;
+    }
+    .subtitle {
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      bottom: 3%;
+      min-height: 58px;
+      border-radius: 8px;
+      background: rgba(0,0,0,.58);
+      border: 1px solid rgba(255,255,255,.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      text-align: center;
+      font-size: clamp(15px, 2vw, 22px);
+      font-weight: 700;
+    }
+    .subtitle span { animation: subtitleSwap 8s steps(1) infinite; }
+    .bar {
+      padding: 12px 14px;
+      display: grid;
+      gap: 10px;
+      background: rgba(255,255,255,.04);
+      border-top: 1px solid var(--line);
+    }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    button, a.button {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: #253047;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    button:hover, a.button:hover { background: #32405f; }
+    .side { padding: 18px; overflow: auto; }
+    h1 { margin: 0 0 8px; font-size: 26px; }
+    h2 { margin: 24px 0 10px; font-size: 18px; }
+    p, li { color: var(--muted); line-height: 1.52; }
+    .note {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255,255,255,.06);
+      margin-top: 10px;
+    }
+    .voice-grid { display: grid; gap: 8px; }
+    .voice {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255,255,255,.05);
+    }
+    .voice strong { display: block; }
+    .voice small { color: var(--muted); }
+    .frames {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .frames img {
+      width: 100%;
+      border-radius: 6px;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border: 1px solid var(--line);
+    }
+    @keyframes signPulse { 0%,100% { filter: brightness(1); } 48% { filter: brightness(1.35); } }
+    @keyframes shimmer { 0%,100% { opacity: .65; transform: scaleX(1); } 50% { opacity: 1; transform: scaleX(1.08); } }
+    @keyframes doorLeft { 0%,18%,100% { transform: translateX(0); } 28%,48% { transform: translateX(-78%); } 58%,75% { transform: translateX(-20%); } }
+    @keyframes doorRight { 0%,18%,100% { transform: translateX(0); } 28%,48% { transform: translateX(78%); } 58%,75% { transform: translateX(20%); } }
+    @keyframes starChase {
+      0%,100% { left: 49%; top: 19%; opacity: .2; }
+      20% { left: 53%; top: 43%; opacity: 1; }
+      42% { left: 29%; top: 48%; }
+      58% { left: 69%; top: 38%; }
+      78% { left: 50%; top: 21%; opacity: 1; }
+    }
+    @keyframes mochiPath {
+      0%,12%,100% { transform: translate(0,0) scale(1); }
+      26% { transform: translate(64px,-6px) scale(1.03); }
+      44% { transform: translate(160px,-10px) scale(1.04) rotate(-3deg); }
+      60% { transform: translate(112px,0) scale(.98); }
+      78% { transform: translate(128px,0) scale(1); }
+    }
+    @keyframes zumuFly {
+      0%,100% { transform: translate(0,0); }
+      22% { transform: translate(-80px,-25px); }
+      43% { transform: translate(-190px,20px); }
+      60% { transform: translate(-95px,-5px) scale(.94); }
+      78% { transform: translate(-78px,5px); }
+    }
+    @keyframes breatheHead { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+    @keyframes breatheBody { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(1.025); } }
+    @keyframes hornLag { 0%,100% { translate: 0 0; } 50% { translate: 0 -1px; } }
+    @keyframes bellyPulse { 0%,100% { filter: drop-shadow(0 0 8px #ffd969); opacity: .78; } 50% { filter: drop-shadow(0 0 22px #ffd969); opacity: 1; } }
+    @keyframes armReach { 0%,22%,100% { transform: rotate(18deg); } 38%,54% { transform: rotate(-38deg) translateY(-5px); } }
+    @keyframes tailGlow { 0%,100% { opacity: .45; } 50% { opacity: .9; } }
+    @keyframes mouthTalk {
+      0%,24%,52%,100% { height: 9px; border-bottom: 3px solid #764333; background: transparent; }
+      26%,39%,62%,72% { height: 14px; border: 0; background: #6d2637; border-radius: 50%; }
+    }
+    @keyframes zTalk {
+      0%,26%,50%,100% { transform: scaleY(1); }
+      30%,42%,76%,84% { transform: scaleY(.45); }
+    }
+    @keyframes subtitleSwap {
+      0% { opacity: 1; }
+    }
+    @media (max-width: 980px) {
+      .wrap { grid-template-columns: 1fr; }
+      .side { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="stage-shell">
+      <div class="stage" id="stage">
+        <div class="store">
+          <div class="sign">별빛 편의점</div>
+          <div class="shelves"><div class="shelf"></div><div class="shelf"></div><div class="shelf"></div></div>
+          <div class="door"></div>
+        </div>
+        <div class="street"></div>
+        <div class="reflection"></div>
+        <div class="star-frag f1"></div>
+        <div class="star-frag f2"></div>
+        <div class="star-frag f3"></div>
+        <div class="mochi">
+          <div class="horn left"></div><div class="horn right"></div>
+          <div class="head">
+            <div class="eye left"></div><div class="eye right"></div>
+            <div class="cheek left"></div><div class="cheek right"></div>
+            <div class="mouth"></div>
+          </div>
+          <div class="body"><div class="belly-star"></div></div>
+          <div class="arm left"></div><div class="arm right"></div>
+          <div class="leg left"></div><div class="leg right"></div>
+        </div>
+        <div class="zumu">
+          <div class="z-eye left"></div><div class="z-eye right"></div><div class="z-mouth"></div>
+        </div>
+        <div class="subtitle"><span id="subtitle">모찌: “어...? 내 별이 저기에도 있어.”</span></div>
+      </div>
+      <div class="bar">
+        <div class="controls">
+          <button onclick="restartAnimatic()">애니매틱 다시 보기</button>
+          <button onclick="playPilotVoices()">대사 자동 재생</button>
+          <a class="button" href="preview.html">검수 페이지</a>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <h1>001. 편의점 자동문에 갇힌 별빛</h1>
+      <p>이 화면은 최종 MP4가 아니라 <strong>움직임/리듬/목소리 방향을 검수하기 위한 파일럿 애니매틱</strong>입니다. 최종 제작에서는 이 구조를 바탕으로 장면별 고품질 렌더, 립싱크, 실제 음성, 편집을 넣습니다.</p>
+
+      <h2>검수할 것</h2>
+      <ul>
+        <li>모찌: 호흡, 배 별 반짝임, 놀람, 손 뻗기</li>
+        <li>주무: 빠른 움직임, 혜성 꼬리, 말 빠른 성격</li>
+        <li>배경: 한국 편의점 느낌, 자동문, 네온 반사</li>
+        <li>연출: 빠르게 실패한 뒤 천천히 해결하는 감정 리듬</li>
+      </ul>
+
+      <h2>캐릭터 목소리 테스트</h2>
+      <div class="voice-grid">
+        <div class="voice"><div><strong>모찌</strong><small>맑고 따뜻한 어린 목소리</small></div><button onclick="speak('mochi','잠깐... 이건 그냥 물건이 아니야.')">듣기</button></div>
+        <div class="voice"><div><strong>주무</strong><small>빠르고 반짝이는 어린 목소리</small></div><button onclick="speak('zumu','가자 가자! 내가 빨리 꺼내올게!')">듣기</button></div>
+        <div class="voice"><div><strong>기조</strong><small>또렷하고 차분한 어린 목소리</small></div><button onclick="speak('gizo','원인을 먼저 보자. 아직 고장이라고 단정하긴 일러.')">듣기</button></div>
+        <div class="voice"><div><strong>피리</strong><small>작고 부드럽지만 단단한 목소리</small></div><button onclick="speak('piri','무섭지만... 내가 옆에 있을게.')">듣기</button></div>
+        <div class="voice"><div><strong>포푸</strong><small>폭신하고 웃음 섞인 목소리</small></div><button onclick="speak('pofu','괜찮아, 구름처럼 지나갈 거야!')">듣기</button></div>
+      </div>
+      <div class="note">브라우저에 한국어 TTS 음성이 없으면 목소리 버튼이 다르게 들릴 수 있습니다. 최종 MP4에는 캐릭터별 고정 보이스를 별도로 제작해야 합니다.</div>
+
+      <h2>품질 목표</h2>
+      <p>최종 영상은 이 애니매틱보다 훨씬 부드럽게 제작합니다: 24fps 기준 호흡 루프, 눈/입 모양, 표정 중간동작, 자동문 반사, 네온빛, 혜성 꼬리, 립싱크를 모두 분리해서 작업합니다.</p>
+
+      <h2>레퍼런스</h2>
+      <div class="frames">
+        <img src="assets/characters/mochi_animation_reference_sheet_ko.png" alt="모찌">
+        <img src="assets/characters/moonlings_supporting_cast_sheet_ko.png" alt="문링즈">
+        <img src="assets/reference/environment_variety_concept_board_ko.png" alt="배경">
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const subtitle = document.getElementById("subtitle");
+    const lines = [
+      [0, "모찌: “어...? 내 별이 저기에도 있어.”"],
+      [2200, "주무: “모찌! 내가 빨리 꺼내올게!”"],
+      [3800, "모찌: “잠깐, 너무 빨리 가면...”"],
+      [5200, "주무: “거의 잡았어! 아니, 또 놓쳤어!”"],
+      [7000, "모찌: “이번엔 잡지 않을게. 기다릴게.”"]
+    ];
+    let subtitleTimers = [];
+
+    function restartAnimatic() {
+      const stage = document.getElementById("stage");
+      stage.style.animation = "none";
+      stage.offsetHeight;
+      stage.style.animation = "";
+      document.querySelectorAll(".stage *").forEach(el => {
+        el.style.animationPlayState = "running";
+        el.style.animation = "none";
+        el.offsetHeight;
+        el.style.animation = "";
+      });
+      subtitleTimers.forEach(clearTimeout);
+      subtitleTimers = [];
+      lines.forEach(([time, text]) => {
+        subtitleTimers.push(setTimeout(() => subtitle.textContent = text, time));
+      });
+    }
+
+    function pickVoice() {
+      const voices = speechSynthesis.getVoices();
+      return voices.find(v => v.lang && v.lang.toLowerCase().startsWith("ko")) || voices[0] || null;
+    }
+
+    function speak(character, text) {
+      if (!("speechSynthesis" in window)) {
+        alert("이 브라우저에서는 음성 테스트를 사용할 수 없습니다.");
+        return;
+      }
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "ko-KR";
+      u.voice = pickVoice();
+      const profile = {
+        mochi: { pitch: 1.25, rate: .92, volume: 1 },
+        zumu: { pitch: 1.45, rate: 1.18, volume: 1 },
+        gizo: { pitch: 1.05, rate: .88, volume: .95 },
+        piri: { pitch: 1.32, rate: .78, volume: .9 },
+        pofu: { pitch: 1.22, rate: .96, volume: .95 }
+      }[character] || { pitch: 1, rate: 1, volume: 1 };
+      Object.assign(u, profile);
+      speechSynthesis.speak(u);
+    }
+
+    function playPilotVoices() {
+      const dialogue = [
+        ["mochi", "어...? 내 별이 저기에도 있어."],
+        ["zumu", "모찌! 내가 빨리 꺼내올게!"],
+        ["mochi", "잠깐, 너무 빨리 가면..."],
+        ["zumu", "거의 잡았어! 아니, 또 놓쳤어!"],
+        ["mochi", "이번엔 잡지 않을게. 기다릴게."]
+      ];
+      let delay = 0;
+      speechSynthesis.cancel();
+      dialogue.forEach(([character, text]) => {
+        setTimeout(() => speak(character, text), delay);
+        delay += Math.max(1400, text.length * 125);
+      });
+      restartAnimatic();
+    }
+
+    if ("speechSynthesis" in window) {
+      speechSynthesis.onvoiceschanged = () => pickVoice();
+    }
+    restartAnimatic();
+  </script>
+</body>
+</html>
