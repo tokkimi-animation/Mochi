@@ -3,203 +3,418 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>모찌의 모험 - 리깅 애니매틱 검수</title>
+  <title>모찌 001 파일럿 검수</title>
   <style>
     :root {
-      --bg: #070912;
-      --panel: #141927;
-      --panel2: #1b2334;
+      --bg: #070812;
+      --panel: #111827;
+      --panel2: #172033;
       --text: #fff7e8;
-      --muted: #bdc7dd;
+      --muted: #c6cee0;
       --line: rgba(255,255,255,.16);
-      --gold: #ffd76a;
-      --blue: #77d8ff;
+      --gold: #ffd86f;
+      --cyan: #80e5ff;
+      --pink: #ff9fbd;
+      --green: #8ef0b4;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: radial-gradient(circle at 15% 5%, #25314f 0, var(--bg) 42%);
+      background:
+        radial-gradient(circle at 16% 8%, rgba(86,145,255,.22), transparent 34%),
+        radial-gradient(circle at 84% 12%, rgba(255,216,111,.16), transparent 32%),
+        var(--bg);
       color: var(--text);
       font-family: "Segoe UI", "Noto Sans KR", Arial, sans-serif;
     }
-    .app {
+    .shell {
       min-height: 100vh;
       display: grid;
-      grid-template-columns: minmax(420px, 1fr) 360px;
-      gap: 16px;
-      padding: 16px;
+      grid-template-columns: minmax(620px, 1fr) 390px;
+      gap: 14px;
+      padding: 14px;
     }
-    .viewer, .side {
-      background: linear-gradient(180deg, var(--panel), #0e1320);
+    .cinema, .panel {
       border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18,26,43,.98), rgba(8,12,22,.98));
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 24px 70px rgba(0,0,0,.38);
+      box-shadow: 0 22px 70px rgba(0,0,0,.4);
+    }
+    .stageWrap {
+      position: relative;
+      background: #03050b;
     }
     canvas {
       width: 100%;
       display: block;
-      background: #080b12;
       aspect-ratio: 16 / 9;
+      background: #050711;
     }
-    .bar {
+    .topline {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+      text-shadow: 0 2px 14px rgba(0,0,0,.65);
+    }
+    .badge {
+      border: 1px solid rgba(255,255,255,.26);
+      background: rgba(6,9,18,.46);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+    }
+    .controls {
       display: grid;
       gap: 10px;
       padding: 12px;
       border-top: 1px solid var(--line);
       background: rgba(255,255,255,.04);
     }
-    .controls {
+    .row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      align-items: center;
     }
     button, a.button {
+      min-height: 38px;
       border: 1px solid var(--line);
-      background: #25324b;
-      color: var(--text);
-      padding: 10px 12px;
       border-radius: 8px;
+      background: #23314c;
+      color: var(--text);
+      padding: 9px 12px;
       font-weight: 800;
       cursor: pointer;
       text-decoration: none;
     }
-    button:hover, a.button:hover { background: #334260; }
-    input[type="range"] { width: 100%; }
-    .side {
-      padding: 18px;
+    button.primary { background: linear-gradient(90deg, #2b8fe8, #18b989); }
+    button.warn { background: #55304a; }
+    button:hover, a.button:hover { filter: brightness(1.1); }
+    input[type="range"] { width: 100%; accent-color: var(--gold); }
+    .timecode {
+      min-width: 94px;
+      color: var(--muted);
+      font-weight: 800;
+      text-align: right;
+    }
+    .panel {
+      padding: 16px;
       overflow: auto;
+      max-height: calc(100vh - 28px);
     }
     h1 {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       font-size: 24px;
       line-height: 1.15;
     }
     h2 {
-      margin: 22px 0 10px;
-      font-size: 17px;
+      margin: 18px 0 9px;
+      font-size: 15px;
+      letter-spacing: 0;
+      color: #fff;
     }
     p, li {
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.48;
     }
-    .tag {
-      display: inline-block;
-      margin: 4px 4px 0 0;
-      padding: 6px 9px;
-      border-radius: 999px;
+    .scene {
       border: 1px solid var(--line);
-      color: var(--muted);
-      background: rgba(255,255,255,.05);
-      font-size: 13px;
-    }
-    .note {
-      border: 1px solid rgba(255,215,106,.35);
-      background: rgba(255,215,106,.08);
-      padding: 12px;
       border-radius: 8px;
-      margin-top: 12px;
+      background: rgba(255,255,255,.055);
+      padding: 10px;
+      margin: 8px 0;
+    }
+    .scene.active {
+      border-color: rgba(255,216,111,.75);
+      background: rgba(255,216,111,.09);
+      box-shadow: inset 0 0 0 1px rgba(255,216,111,.15);
+    }
+    .scene strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .scene small {
+      display: block;
+      color: var(--muted);
+      line-height: 1.38;
+    }
+    .voiceGrid {
+      display: grid;
+      gap: 8px;
     }
     .voice {
       display: grid;
       grid-template-columns: 1fr auto;
-      align-items: center;
       gap: 8px;
-      padding: 10px;
-      border-radius: 8px;
+      align-items: center;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.05);
-      margin-bottom: 8px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.055);
+      padding: 9px;
     }
-    .voice small { color: var(--muted); display: block; margin-top: 2px; }
-    @media (max-width: 980px) {
-      .app { grid-template-columns: 1fr; padding: 10px; }
+    .voice span { color: var(--muted); font-size: 12px; display: block; margin-top: 2px; }
+    .note {
+      border-left: 3px solid var(--cyan);
+      padding: 8px 0 8px 10px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .tech {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 9px;
+      color: var(--muted);
+      background: rgba(255,255,255,.045);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    @media (max-width: 1050px) {
+      .shell { grid-template-columns: 1fr; padding: 8px; }
+      .panel { max-height: none; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <section class="viewer">
-      <canvas id="c" width="1920" height="1080"></canvas>
-      <div class="bar">
-        <input id="scrub" type="range" min="0" max="1000" value="0">
-        <div class="controls">
-          <button id="play">Pause</button>
-          <button id="debug">Debug rig: off</button>
-          <button id="paths">Trajectoires: on</button>
-          <button id="voices">Voix test</button>
-          <a class="button" href="preview.html">Retour preview</a>
+  <main class="shell">
+    <section class="cinema">
+      <div class="stageWrap">
+        <canvas id="stage" width="1920" height="1080"></canvas>
+        <div class="topline">
+          <div class="badge" id="shotBadge">EP001 · SHOT 01</div>
+          <div class="badge" id="modeBadge">렌더 목표 품질</div>
+        </div>
+      </div>
+      <div class="controls">
+        <input id="scrub" type="range" min="0" max="180" value="0" step=".1" aria-label="timeline">
+        <div class="row">
+          <button class="primary" id="play">재생</button>
+          <button id="demo">45초 빠른 검수</button>
+          <button id="voices">캐릭터 목소리</button>
+          <button id="sfx">효과음 테스트</button>
+          <button id="overlay">제작 메모 켜기</button>
+          <button class="warn" id="jumpEmotion">감정 장면</button>
+          <a class="button" href="preview.html">전체 프리뷰</a>
+          <span class="timecode" id="timecode">00:00 / 03:00</span>
         </div>
       </div>
     </section>
 
-    <aside class="side">
+    <aside class="panel">
       <h1>001. 편의점 자동문에 갇힌 별빛</h1>
-      <p>Nouvelle version : personnage dessiné en canvas avec rig logique, textures procédurales, articulations cohérentes, trajectoires visibles et mouvements par partie du corps.</p>
-      <div>
-        <span class="tag">body rig</span>
-        <span class="tag">head follow</span>
-        <span class="tag">horn delay</span>
-        <span class="tag">arm reach</span>
-        <span class="tag">walk cycle</span>
-        <span class="tag">plush texture</span>
-        <span class="tag">voice identity</span>
+      <p>검수용 파일럿입니다. 단순 도형 애니메이션이 아니라 생성된 고품질 이미지를 기준으로, 카메라 움직임, 빛, 표정 타이밍, 한국어 대사, 어린 캐릭터 목소리, 효과음을 한 번에 확인하게 만들었습니다.</p>
+
+      <h2>3분 안에 실제로 일어나는 이야기</h2>
+      <div id="sceneList"></div>
+
+      <h2>목소리 아이덴티티</h2>
+      <div class="voiceGrid">
+        <div class="voice"><div><b>모찌</b><span>맑고 따뜻한 어린 목소리, 생각할 때 느려짐</span></div><button onclick="speakLine('mochi','잠깐만. 저 별빛이 문 사이에 끼었어. 겁먹은 것 같아.')">듣기</button></div>
+        <div class="voice"><div><b>주무</b><span>빠르고 반짝이는 목소리, 흥분하면 문장이 짧아짐</span></div><button onclick="speakLine('zumu','가자 가자! 내가 빛줄기로 살짝 밀어 볼게!')">듣기</button></div>
+        <div class="voice"><div><b>기조</b><span>차분하고 또렷한 목소리, 원인을 먼저 봄</span></div><button onclick="speakLine('gizo','자동문 센서가 빛을 손님으로 착각했을 가능성이 있어.')">듣기</button></div>
+        <div class="voice"><div><b>피리</b><span>작고 섬세한 목소리, 겁나도 곁에 남음</span></div><button onclick="speakLine('piri','무섭지만, 그 별빛이 혼자 있지 않게 해줄래.')">듣기</button></div>
+        <div class="voice"><div><b>포푸</b><span>폭신하고 밝은 목소리, 분위기를 풀어줌</span></div><button onclick="speakLine('pofu','괜찮아. 천천히 하면 문도 마음을 열 거야!')">듣기</button></div>
       </div>
 
-      <h2>Ce qui est vraiment codé</h2>
-      <ul>
-        <li>Chaque partie de Mochi a son propre pivot : corps, tête, cornes, bras, jambes, yeux, bouche, étoile.</li>
-        <li>Le mouvement suit une timeline : approche, surprise, course, arrêt émotionnel, résolution.</li>
-        <li>Les textures peluche sont générées par bruit + gradients, pas par simples blocs plats.</li>
-        <li>Les trajectoires sont affichables pour contrôler la cohérence des déplacements.</li>
-        <li>Les mouvements secondaires ont du retard : cornes, bras, étoile, queue de Zumu.</li>
-      </ul>
-
-      <h2>Voix personnages</h2>
-      <div class="voice"><div><strong>모찌</strong><small>clair, doux, enfantin</small></div><button onclick="speak('mochi','잠깐... 이건 그냥 물건이 아니야.')">듣기</button></div>
-      <div class="voice"><div><strong>주무</strong><small>rapide, lumineux, impulsif</small></div><button onclick="speak('zumu','가자 가자! 내가 빨리 꺼내올게!')">듣기</button></div>
-      <div class="voice"><div><strong>기조</strong><small>calme, précis, analytique</small></div><button onclick="speak('gizo','원인을 먼저 보자. 아직 고장이라고 단정하긴 일러.')">듣기</button></div>
-      <div class="voice"><div><strong>피리</strong><small>petit, sensible, courageux</small></div><button onclick="speak('piri','무섭지만... 내가 옆에 있을게.')">듣기</button></div>
-      <div class="voice"><div><strong>포푸</strong><small>rond, souriant, nuageux</small></div><button onclick="speak('pofu','괜찮아, 구름처럼 지나갈 거야!')">듣기</button></div>
-
-      <div class="note">
-        Cette page reste une prévisualisation codée, pas le rendu final. Mais maintenant elle sert vraiment à valider le mouvement, le rig, la cohérence corporelle et la direction animation avant MP4.
+      <h2>움직임/질감 지시</h2>
+      <div class="tech">
+        <div class="chip">플러시 털결 노이즈</div>
+        <div class="chip">네온 반사 레이어</div>
+        <div class="chip">자동문 빛 스캔</div>
+        <div class="chip">별빛 파티클</div>
+        <div class="chip">숨 쉬는 배 별</div>
+        <div class="chip">눈물광/홍조</div>
+        <div class="chip">카메라 dolly-in</div>
+        <div class="chip">장면별 음향</div>
       </div>
+      <p class="note">이 페이지는 최종 MP4가 아니라 “승인용 비디오 보드”입니다. 여기서 그림체, 목소리, 3분 이야기, 감정 흐름을 승인한 다음 이 품질 기준으로 실제 MP4 제작 단계로 넘어갑니다.</p>
     </aside>
-  </div>
+  </main>
 
   <script>
-    const canvas = document.getElementById("c");
+    const canvas = document.getElementById("stage");
     const ctx = canvas.getContext("2d");
     const W = canvas.width;
     const H = canvas.height;
-    const DURATION = 18;
-    const state = { t: 0, playing: true, debug: false, paths: true, last: performance.now() };
-    const scrub = document.getElementById("scrub");
+    const DURATION = 180;
+    const state = { t: 0, playing: false, demo: false, overlay: false, last: performance.now(), audioReady: false };
 
-    const TAU = Math.PI * 2;
-    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-    const lerp = (a, b, t) => a + (b - a) * t;
-    const ease = t => t * t * (3 - 2 * t);
-    const phase = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
-    const wave = (t, speed = 1, amp = 1) => Math.sin(t * TAU * speed) * amp;
+    const imageFiles = [
+      "assets/pilot_ep001/ep001_01_establishing.png",
+      "assets/pilot_ep001/ep001_02_door_incident.png",
+      "assets/pilot_ep001/ep001_03_chase.png",
+      "assets/pilot_ep001/ep001_04_emotional_beat.png",
+      "assets/pilot_ep001/ep001_05_resolution.png"
+    ];
+    const images = imageFiles.map(src => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    });
 
-    const noiseCanvas = document.createElement("canvas");
-    noiseCanvas.width = 256;
-    noiseCanvas.height = 256;
-    const nctx = noiseCanvas.getContext("2d");
-    const img = nctx.createImageData(256, 256);
-    for (let i = 0; i < img.data.length; i += 4) {
-      const v = 205 + Math.random() * 50;
-      img.data[i] = v;
-      img.data[i + 1] = v;
-      img.data[i + 2] = v;
-      img.data[i + 3] = 34;
+    const scenes = [
+      {
+        id: "01", start: 0, end: 22, img: 0, title: "밤 편의점 앞",
+        action: "모찌와 주무가 밤 산책 중 한국 편의점 앞에 멈춘다. 자동문 사이에 작은 별빛이 끼어 깜빡인다.",
+        line: "모찌: 잠깐만. 저 별빛이 문 사이에 끼었어.",
+        note: "간판 네온, 유리 반사, 길바닥 습기광. 카메라는 천천히 앞으로 들어간다.",
+        voice: ["mochi", "잠깐만. 저 별빛이 문 사이에 끼었어."]
+      },
+      {
+        id: "02", start: 22, end: 48, img: 1, title: "자동문 사건",
+        action: "주무가 빠르게 빛꼬리로 별빛을 당기려 하지만 자동문 센서가 더 자주 열리고 닫힌다.",
+        line: "주무: 가자 가자! 내가 빨리 빼낼게!",
+        note: "문 센서 라이트가 좌우로 스캔. 주무 꼬리는 잔상과 작은 별가루를 남긴다.",
+        voice: ["zumu", "가자 가자! 내가 빨리 빼낼게!"]
+      },
+      {
+        id: "03", start: 48, end: 82, img: 2, title: "빠른 해결의 실패",
+        action: "모찌가 별빛을 잡으려 뛰어들지만 별빛은 바닥 반사로 흩어지고, 모찌는 멈칫한다.",
+        line: "모찌: 내가 도와주려던 건데... 왜 더 무서워하지?",
+        note: "발소리, 미끄러운 반사, 숨이 빨라짐. 몸은 앞으로 가지만 눈은 별빛을 놓친다.",
+        voice: ["mochi", "내가 도와주려던 건데... 왜 더 무서워하지?"]
+      },
+      {
+        id: "04", start: 82, end: 126, img: 3, title: "감정의 핵심",
+        action: "모찌가 쫓는 걸 멈춘다. 별빛도 멈춘다. 모찌는 강제로 해결하려던 마음을 인정한다.",
+        line: "모찌: 잡는 게 아니라, 기다려 줘야 했어.",
+        note: "음악이 줄고 호흡만 남는다. 배의 별빛이 약해졌다가 천천히 따뜻해진다.",
+        voice: ["mochi", "잡는 게 아니라, 기다려 줘야 했어."]
+      },
+      {
+        id: "05", start: 126, end: 162, img: 4, title: "함께 맞추는 리듬",
+        action: "모찌와 주무가 자동문의 열림 리듬에 맞춰 움직인다. 별빛은 스스로 빠져나와 모찌의 손 위에 내려앉는다.",
+        line: "주무: 정답보다 중요한 걸 찾았네.",
+        note: "문 열림, 발걸음, 꼬리 빛, 배 별이 같은 박자로 맞춰진다.",
+        voice: ["zumu", "정답보다 중요한 걸 찾았네."]
+      },
+      {
+        id: "06", start: 162, end: 180, img: 4, title: "엔딩 비트",
+        action: "별빛이 편의점 간판에 작은 별 모양을 남긴다. 모찌는 웃음을 참다가 조용히 웃는다.",
+        line: "모찌: 다음엔 더 늦게, 더 잘 볼래.",
+        note: "2초 호흡 루프, 부드러운 클로즈업, 다음 화를 암시하는 작은 빛.",
+        voice: ["mochi", "다음엔 더 늦게, 더 잘 볼래."]
+      }
+    ];
+
+    const sceneList = document.getElementById("sceneList");
+    sceneList.innerHTML = scenes.map((s, i) => `
+      <div class="scene" id="scene-${i}">
+        <strong>${format(s.start)}-${format(s.end)} · ${s.title}</strong>
+        <small>${s.action}</small>
+      </div>
+    `).join("");
+
+    function format(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     }
-    nctx.putImageData(img, 0, 0);
-    const plushPattern = ctx.createPattern(noiseCanvas, "repeat");
 
-    function roundedRect(x, y, w, h, r) {
+    function activeScene(t = state.t) {
+      return scenes.find(s => t >= s.start && t < s.end) || scenes[scenes.length - 1];
+    }
+
+    function sceneProgress(s, t = state.t) {
+      return Math.max(0, Math.min(1, (t - s.start) / (s.end - s.start)));
+    }
+
+    function ease(t) { return t * t * (3 - 2 * t); }
+    function coverImage(img, cx, cy, scale, rot = 0) {
+      if (!img.complete || !img.naturalWidth) {
+        drawLoading();
+        return;
+      }
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+      const base = Math.max(W / iw, H / ih) * scale;
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(rot);
+      ctx.drawImage(img, -iw * base / 2 + cx, -ih * base / 2 + cy, iw * base, ih * base);
+      ctx.restore();
+    }
+
+    function drawLoading() {
+      ctx.fillStyle = "#060912";
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "#fff7e8";
+      ctx.font = "800 44px Segoe UI, Noto Sans KR";
+      ctx.textAlign = "center";
+      ctx.fillText("렌더 이미지를 불러오는 중", W / 2, H / 2);
+    }
+
+    function drawGrade(t, s, p) {
+      const night = ctx.createLinearGradient(0, 0, 0, H);
+      night.addColorStop(0, "rgba(14,19,50,.12)");
+      night.addColorStop(.62, "rgba(8,9,18,.05)");
+      night.addColorStop(1, "rgba(0,0,0,.24)");
+      ctx.fillStyle = night;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const glowX = 260 + Math.sin(t * .55) * 65;
+      const g = ctx.createRadialGradient(glowX, 140, 10, glowX, 140, 520);
+      g.addColorStop(0, "rgba(128,229,255,.18)");
+      g.addColorStop(.5, "rgba(255,216,111,.08)");
+      g.addColorStop(1, "rgba(255,216,111,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+
+      if (s.id === "02" || s.id === "05") {
+        const scan = (p * 2) % 1;
+        ctx.fillStyle = "rgba(145,235,255,.16)";
+        ctx.fillRect(W * (.33 + scan * .2), 130, 18, 720);
+      }
+      ctx.restore();
+    }
+
+    function drawParticles(t, s, p) {
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const count = s.id === "04" ? 34 : 54;
+      for (let i = 0; i < count; i++) {
+        const seed = i * 97.13;
+        const drift = (t * (12 + i % 7) + seed) % 900;
+        const x = (seed * 11 + Math.sin(t * .35 + i) * 80 + drift) % W;
+        const y = 80 + ((seed * 17 + Math.cos(t * .24 + i) * 40) % 760);
+        const r = 1.5 + (i % 5) * .8;
+        const a = .18 + .42 * Math.sin(t * 1.4 + i) ** 2;
+        ctx.fillStyle = `rgba(255,224,122,${a})`;
+        star(x, y, r * 2.2, r, t * .25 + i);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function star(x, y, r1, r2, rot = 0) {
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 ? r2 : r1;
+        const a = -Math.PI / 2 + rot + i * Math.PI / 5;
+        const px = x + Math.cos(a) * r;
+        const py = y + Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+    }
+
+    function rounded(x, y, w, h, r) {
       ctx.beginPath();
       ctx.moveTo(x + r, y);
       ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -209,551 +424,209 @@
       ctx.closePath();
     }
 
-    function starPath(cx, cy, r1, r2, points = 5) {
-      ctx.beginPath();
-      for (let i = 0; i < points * 2; i++) {
-        const r = i % 2 ? r2 : r1;
-        const a = -Math.PI / 2 + i * Math.PI / points;
-        const x = cx + Math.cos(a) * r;
-        const y = cy + Math.sin(a) * r;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-    }
-
-    function plushEllipse(x, y, rx, ry, colorA, colorB, rot = 0, alpha = 1) {
+    function drawMotionNotes(s, p) {
+      if (!state.overlay) return;
+      const notes = [
+        ["texture", "플러시 털결 + 홍조 보존", 72, 142],
+        ["light", "네온 반사/별빛 레이어", 72, 190],
+        ["camera", s.note, 72, 238]
+      ];
       ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rot);
-      ctx.globalAlpha *= alpha;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, rx, ry, 0, 0, TAU);
-      const g = ctx.createRadialGradient(-rx * .35, -ry * .38, rx * .08, 0, 0, Math.max(rx, ry) * 1.2);
-      g.addColorStop(0, colorA);
-      g.addColorStop(.68, colorB);
-      g.addColorStop(1, shade(colorB, -24));
-      ctx.fillStyle = g;
-      ctx.fill();
-      ctx.clip();
-      ctx.globalAlpha *= .55;
-      ctx.fillStyle = plushPattern;
-      ctx.translate(-rx * 2, -ry * 2);
-      ctx.fillRect(0, 0, rx * 4, ry * 4);
-      ctx.restore();
-    }
-
-    function shade(hex, amt) {
-      const n = parseInt(hex.slice(1), 16);
-      const r = clamp((n >> 16) + amt, 0, 255);
-      const g = clamp(((n >> 8) & 255) + amt, 0, 255);
-      const b = clamp((n & 255) + amt, 0, 255);
-      return `rgb(${r},${g},${b})`;
-    }
-
-    function drawBackground(t) {
-      const night = ctx.createLinearGradient(0, 0, 0, H);
-      night.addColorStop(0, "#17234c");
-      night.addColorStop(.44, "#0c1125");
-      night.addColorStop(1, "#070912");
-      ctx.fillStyle = night;
-      ctx.fillRect(0, 0, W, H);
-
-      for (let i = 0; i < 40; i++) {
-        const x = (i * 181 + 97) % W;
-        const y = 40 + (i * 73) % 390;
-        const a = .25 + .5 * Math.sin(t * 1.4 + i);
-        ctx.fillStyle = `rgba(255,232,150,${a})`;
-        ctx.beginPath();
-        ctx.arc(x, y, 1.8 + (i % 3), 0, TAU);
+      ctx.font = "800 24px Segoe UI, Noto Sans KR";
+      notes.forEach((n, i) => {
+        const y = n[3];
+        rounded(n[2], y - 26, 620, 42, 12);
+        ctx.fillStyle = "rgba(3,6,14,.56)";
         ctx.fill();
-      }
-
-      ctx.save();
-      ctx.translate(0, 0);
-      drawStore(t);
-      drawStreet(t);
-      ctx.restore();
-    }
-
-    function drawStore(t) {
-      const x = 250, y = 130, w = 1420, h = 620;
-      ctx.save();
-      ctx.shadowColor = "rgba(80,190,255,.22)";
-      ctx.shadowBlur = 55;
-      roundedRect(x, y, w, h, 28);
-      ctx.fillStyle = "#151d2c";
-      ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.strokeStyle = "rgba(255,255,255,.22)";
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-      roundedRect(x + 56, y + 44, w - 112, 116, 18);
-      const sign = ctx.createLinearGradient(x + 56, 0, x + w - 56, 0);
-      sign.addColorStop(0, "#56e097");
-      sign.addColorStop(.42, "#fff5a7");
-      sign.addColorStop(.68, "#ff9d45");
-      sign.addColorStop(1, "#5bc8ff");
-      ctx.fillStyle = sign;
-      ctx.fill();
-      ctx.shadowColor = "rgba(255,220,104,.65)";
-      ctx.shadowBlur = 34 + 12 * Math.sin(t * 3);
-      ctx.fillStyle = "#102033";
-      ctx.font = "900 54px Segoe UI, Noto Sans KR, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("별빛 편의점", x + w / 2, y + 103);
-      ctx.shadowBlur = 0;
-
-      drawDoor(t, x + w / 2 - 150, y + 220, 300, 450);
-      drawShelves(x + 80, y + 230, 380, 390);
-      drawShelves(x + w - 460, y + 230, 380, 390);
-      ctx.restore();
-    }
-
-    function drawShelves(x, y, w, h) {
-      roundedRect(x, y, w, h, 14);
-      ctx.fillStyle = "rgba(255,255,255,.06)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,.14)";
-      ctx.stroke();
-      for (let row = 0; row < 4; row++) {
-        const yy = y + 58 + row * 78;
-        ctx.strokeStyle = "rgba(255,255,255,.22)";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(x + 24, yy);
-        ctx.lineTo(x + w - 24, yy);
+        ctx.strokeStyle = i === 2 ? "rgba(255,216,111,.5)" : "rgba(255,255,255,.18)";
         ctx.stroke();
-        for (let i = 0; i < 6; i++) {
-          const px = x + 42 + i * 52;
-          ctx.fillStyle = ["#fff2cc", "#ffcfda", "#aee7ff", "#b8f6c7"][row % 4];
-          roundedRect(px, yy - 42, 34, 38, 6);
-          ctx.fill();
-        }
-      }
-    }
-
-    function drawDoor(t, x, y, w, h) {
-      const open = .5 + .5 * Math.sin(t * .7);
-      const gap = 30 + open * 95;
-      ctx.save();
-      ctx.strokeStyle = "rgba(220,245,255,.6)";
-      ctx.lineWidth = 4;
-      ctx.fillStyle = "rgba(160,224,255,.12)";
-      ctx.fillRect(x, y, w, h);
-      ctx.strokeRect(x, y, w, h);
-      ctx.fillStyle = "rgba(200,245,255,.16)";
-      ctx.fillRect(x + w / 2 - gap, y + 2, w / 2, h - 4);
-      ctx.fillRect(x + w / 2, y + 2, w / 2 - gap, h - 4);
-      ctx.strokeStyle = "rgba(255,255,255,.3)";
-      ctx.beginPath();
-      ctx.moveTo(x + w / 2 - gap, y);
-      ctx.lineTo(x + w / 2 - gap, y + h);
-      ctx.moveTo(x + w / 2 + gap, y);
-      ctx.lineTo(x + w / 2 + gap, y + h);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawStreet(t) {
-      const g = ctx.createLinearGradient(0, 720, 0, H);
-      g.addColorStop(0, "#252d3b");
-      g.addColorStop(1, "#0c0f16");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 720, W, 360);
-      for (let i = 0; i < 14; i++) {
-        ctx.strokeStyle = `rgba(110,210,255,${.08 + .04 * Math.sin(t + i)})`;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.ellipse(170 + i * 130, 900 + Math.sin(i) * 20, 80, 10, 0, 0, TAU);
-        ctx.stroke();
-      }
-    }
-
-    function rigMochi(t) {
-      const p1 = ease(phase(t, 1.5, 5));
-      const p2 = ease(phase(t, 5, 9));
-      const p3 = ease(phase(t, 9, 12));
-      const p4 = ease(phase(t, 12, 16));
-      const run = Math.sin(t * 7.5);
-      const baseX = lerp(455, 780, p1) + 90 * Math.sin(p2 * Math.PI) - 45 * p3 + 70 * p4;
-      const baseY = 850 - 14 * Math.sin(p2 * Math.PI * 4) * phase(t, 5, 9);
-      const breathe = Math.sin(t * TAU * .72);
-      const moodDrop = phase(t, 8.8, 11.2) * (1 - phase(t, 12.2, 15));
-      return {
-        x: baseX,
-        y: baseY,
-        scale: 1.08,
-        bodyRot: lerp(0, -0.12, p2) + run * .025 * phase(t, 5, 9),
-        headRot: lerp(.05, -.18, moodDrop) + Math.sin(t * 2.2) * .025,
-        breathe,
-        moodDrop,
-        reach: Math.sin(p1 * Math.PI) + .3 * phase(t, 12, 15),
-        run: phase(t, 5, 9),
-        starPower: .65 + .35 * Math.sin(t * 4) - .35 * moodDrop + .45 * p4
-      };
-    }
-
-    function drawMochi(t) {
-      const r = rigMochi(t);
-      ctx.save();
-      ctx.translate(r.x, r.y);
-      ctx.scale(r.scale, r.scale);
-      ctx.rotate(r.bodyRot);
-
-      drawLimb(-46, -18, -18 + r.run * Math.sin(t * 8) * 8, 55, 19, "#fff8e8");
-      drawLimb(46, -18, 18 - r.run * Math.sin(t * 8) * 8, 55, 19, "#fff8e8");
-      drawArm(-72, -115, -98 - 32 * r.reach, -54 - 22 * r.reach, 21, "#fff8e8");
-      drawArm(72, -115, 96, -65 + r.run * Math.sin(t * 8) * 10, 21, "#fff8e8");
-
-      plushEllipse(0, -112, 78, 96 + r.breathe * 2, "#fffdf4", "#f4e8cf", 0);
-      drawBellyStar(0, -122, 26, r.starPower);
-
-      ctx.save();
-      ctx.translate(0, -218 + r.breathe * -2);
-      ctx.rotate(r.headRot);
-      drawHorn(-48, -66, -0.48 + r.breathe * .03);
-      drawHorn(48, -66, 0.48 - r.breathe * .03, true);
-      plushEllipse(0, 0, 98, 86, "#fffdf5", "#f1e5cd", 0);
-      drawFace(t, r.moodDrop);
-      ctx.restore();
-
-      ctx.restore();
-
-      if (state.debug) {
-        drawDebugPoint(r.x, r.y, "body");
-        drawDebugPoint(r.x, r.y - 235 * r.scale, "head");
-      }
-    }
-
-    function drawLimb(x1, y1, x2, y2, w, color) {
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = w;
-      ctx.lineCap = "round";
-      ctx.shadowColor = "rgba(0,0,0,.18)";
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.quadraticCurveTo((x1 + x2) / 2, (y1 + y2) / 2 + 6, x2, y2);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawArm(x1, y1, x2, y2, w, color) {
-      drawLimb(x1, y1, x2, y2, w, color);
-      plushEllipse(x2, y2, w * .68, w * .58, "#fffdf4", "#f1e5cd", 0);
-    }
-
-    function drawHorn(x, y, rot, flip = false) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(flip ? -1 : 1, 1);
-      ctx.rotate(rot);
-      ctx.beginPath();
-      ctx.moveTo(0, 38);
-      ctx.bezierCurveTo(-34, 12, -28, -44, 18, -58);
-      ctx.bezierCurveTo(2, -26, 15, 10, 34, 28);
-      ctx.bezierCurveTo(20, 42, 8, 44, 0, 38);
-      const g = ctx.createLinearGradient(-24, -50, 34, 40);
-      g.addColorStop(0, "#fff0b7");
-      g.addColorStop(1, "#e7c56d");
-      ctx.fillStyle = g;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawFace(t, sad) {
-      const blink = Math.sin(t * 3.3) > .96 ? .15 : 1;
-      drawEye(-35, -5, blink, sad);
-      drawEye(35, -5, blink, sad);
-      ctx.fillStyle = "rgba(255,145,170,.6)";
-      ctx.beginPath();
-      ctx.ellipse(-58, 24, 18, 12, 0, 0, TAU);
-      ctx.ellipse(58, 24, 18, 12, 0, 0, TAU);
-      ctx.fill();
-      ctx.fillStyle = "#eaa0a5";
-      ctx.beginPath();
-      ctx.ellipse(0, 10, 8, 5, 0, 0, TAU);
-      ctx.fill();
-      ctx.strokeStyle = "#69423b";
-      ctx.lineWidth = 5;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      if (sad > .35) {
-        ctx.arc(0, 45, 18, Math.PI * 1.12, Math.PI * 1.88);
-      } else if (phase(t, 2, 4) > .2 || phase(t, 6, 8) > .2) {
-        ctx.ellipse(0, 42, 12, 16, 0, 0, TAU);
-      } else {
-        ctx.arc(0, 30, 23, .25 * Math.PI, .75 * Math.PI);
-      }
-      ctx.stroke();
-    }
-
-    function drawEye(x, y, blink, sad) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(1, blink);
-      ctx.fillStyle = "#4f2a12";
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 17, 24, 0, 0, TAU);
-      ctx.fill();
-      const g = ctx.createRadialGradient(-5, -8, 2, 0, 0, 24);
-      g.addColorStop(0, "#fff");
-      g.addColorStop(.18, "#f5c16b");
-      g.addColorStop(.7, "#8f4a1a");
-      g.addColorStop(1, "#321309");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 15, 22, 0, 0, TAU);
-      ctx.fill();
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.arc(-6, -9, 5, 0, TAU);
-      ctx.arc(6, 4, 2.5, 0, TAU);
-      ctx.fill();
-      ctx.strokeStyle = "#755046";
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.arc(0, -24 - sad * 4, 20, Math.PI * (1.08 + sad * .05), Math.PI * (1.9 - sad * .07));
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawBellyStar(x, y, r, power) {
-      ctx.save();
-      ctx.shadowColor = "#ffd76a";
-      ctx.shadowBlur = 14 + power * 32;
-      starPath(x, y, r, r * .45);
-      ctx.fillStyle = `rgba(255,216,106,${clamp(power, .2, 1)})`;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function rigZumu(t) {
-      const p = ease(phase(t, 2.2, 8.5));
-      const slow = phase(t, 9, 13);
-      return {
-        x: 1350 - 470 * p + 80 * Math.sin(t * 2.8) * (1 - slow),
-        y: 610 - 160 * Math.sin(p * Math.PI) + 25 * Math.sin(t * 3.8),
-        rot: -.2 + Math.sin(t * 4) * .12 * (1 - slow),
-        speed: 1 - slow * .65
-      };
-    }
-
-    function drawZumu(t) {
-      const z = rigZumu(t);
-      ctx.save();
-      ctx.translate(z.x, z.y);
-      ctx.rotate(z.rot);
-      drawZumuTail(z.speed, t);
-      plushEllipse(0, 0, 66, 62, "#9ff5ff", "#44b8e0", 0);
-      drawZumuFace(t);
-      ctx.restore();
-      if (state.debug) drawDebugPoint(z.x, z.y, "zumu");
-    }
-
-    function drawZumuTail(speed, t) {
-      ctx.save();
-      ctx.globalAlpha = .35 + speed * .45;
-      const g = ctx.createLinearGradient(-230, 0, -30, 0);
-      g.addColorStop(0, "rgba(70,190,255,0)");
-      g.addColorStop(.5, "rgba(117,225,255,.65)");
-      g.addColorStop(1, "rgba(255,255,255,.3)");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(-110, 10 + Math.sin(t * 5) * 6, 135 * speed, 28, -.12, 0, TAU);
-      ctx.fill();
-      for (let i = 0; i < 9; i++) {
-        const x = -55 - i * 18 * speed;
-        const y = Math.sin(t * 4 + i) * 18;
-        drawTinyStar(x, y, 4 + (i % 3), .8);
-      }
-      ctx.restore();
-    }
-
-    function drawZumuFace(t) {
-      drawZEye(-22, -8);
-      drawZEye(22, -8);
-      ctx.fillStyle = "rgba(255,130,160,.48)";
-      ctx.beginPath();
-      ctx.ellipse(-42, 18, 12, 8, 0, 0, TAU);
-      ctx.ellipse(42, 18, 12, 8, 0, 0, TAU);
-      ctx.fill();
-      ctx.fillStyle = "#61223a";
-      ctx.beginPath();
-      ctx.ellipse(0, 24, 13, 11 + 5 * Math.sin(t * 8), 0, 0, TAU);
-      ctx.fill();
-    }
-
-    function drawZEye(x, y) {
-      ctx.save();
-      ctx.translate(x, y);
-      const g = ctx.createRadialGradient(-4, -6, 2, 0, 0, 18);
-      g.addColorStop(0, "#fff");
-      g.addColorStop(.18, "#ffd07b");
-      g.addColorStop(.78, "#8d3c13");
-      g.addColorStop(1, "#2d1208");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 13, 17, 0, 0, TAU);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawStars(t) {
-      const points = [
-        [920, 245], [1010, 410], [780, 520], [1190, 350], [640, 470]
-      ];
-      const gather = ease(phase(t, 12.2, 16));
-      points.forEach((p, i) => {
-        const chase = phase(t, 4.5, 8.2);
-        const x = lerp(p[0] + Math.sin(t * 3 + i) * 60, 960 + Math.cos(i) * 35, gather);
-        const y = lerp(p[1] + Math.cos(t * 2 + i) * 35, 240 + Math.sin(i) * 25, gather);
-        drawTinyStar(x, y, 13 + i % 2 * 5, .8 + .2 * Math.sin(t * 5 + i));
+        ctx.fillStyle = i === 2 ? "#ffd86f" : "#e8f3ff";
+        ctx.fillText(n[1], n[2] + 16, y + 2);
       });
-    }
-
-    function drawTinyStar(x, y, r, alpha) {
-      ctx.save();
-      ctx.globalAlpha *= alpha;
-      ctx.shadowColor = "#ffd76a";
-      ctx.shadowBlur = 18;
-      starPath(x, y, r, r * .45);
-      ctx.fillStyle = "#ffe07a";
-      ctx.fill();
+      drawTrajectory(s, p);
       ctx.restore();
     }
 
-    function drawPaths() {
-      if (!state.paths) return;
+    function drawTrajectory(s, p) {
+      if (s.id === "01" || s.id === "04") return;
+      const startX = s.id === "02" ? 1420 : 1320;
+      const endX = s.id === "03" ? 720 : 960;
+      const y = s.id === "05" ? 600 : 520;
       ctx.save();
-      ctx.strokeStyle = "rgba(255,216,106,.5)";
+      ctx.setLineDash([14, 14]);
+      ctx.strokeStyle = "rgba(128,229,255,.72)";
       ctx.lineWidth = 4;
-      ctx.setLineDash([14, 12]);
       ctx.beginPath();
-      for (let i = 0; i <= 80; i++) {
-        const tt = (i / 80) * DURATION;
-        const r = rigMochi(tt);
-        if (i === 0) ctx.moveTo(r.x, r.y);
-        else ctx.lineTo(r.x, r.y);
-      }
+      ctx.moveTo(startX, y);
+      ctx.quadraticCurveTo(1120, y - 210, endX, y + 20);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(119,216,255,.55)";
-      ctx.beginPath();
-      for (let i = 0; i <= 80; i++) {
-        const tt = (i / 80) * DURATION;
-        const z = rigZumu(tt);
-        if (i === 0) ctx.moveTo(z.x, z.y);
-        else ctx.lineTo(z.x, z.y);
-      }
-      ctx.stroke();
+      ctx.setLineDash([]);
+      const x = startX + (endX - startX) * ease(p);
+      const yy = y - Math.sin(p * Math.PI) * 130;
+      ctx.shadowColor = "#ffd86f";
+      ctx.shadowBlur = 28;
+      ctx.fillStyle = "#ffe07a";
+      star(x, yy, 28, 13, state.t * .4);
+      ctx.fill();
       ctx.restore();
     }
 
-    function drawDebugPoint(x, y, label) {
+    function drawSubtitle(s) {
       ctx.save();
-      ctx.fillStyle = "#ff4f8b";
-      ctx.beginPath();
-      ctx.arc(x, y, 6, 0, TAU);
+      rounded(190, 910, 1540, 104, 22);
+      ctx.fillStyle = "rgba(0,0,0,.62)";
       ctx.fill();
-      ctx.font = "700 18px Segoe UI";
-      ctx.fillText(label, x + 10, y - 10);
-      ctx.restore();
-    }
-
-    function drawSubtitles(t) {
-      const items = [
-        [0, 3.0, "모찌: “어...? 내 별이 저기에도 있어.”"],
-        [3.0, 5.2, "주무: “모찌! 내가 빨리 꺼내올게!”"],
-        [5.2, 8.6, "주무: “거의 잡았어! 아니, 또 놓쳤어!”"],
-        [9.0, 12.3, "모찌: “내가 구하려던 게... 더 무섭게 만든 걸까?”"],
-        [12.3, 15.5, "모찌: “이번엔 잡지 않을게. 기다릴게.”"],
-        [15.5, 18, "모찌: “약속은 끝까지 보는 거야.”"]
-      ];
-      const text = items.find(v => t >= v[0] && t < v[1])?.[2] || "";
-      ctx.save();
-      roundedRect(130, 935, 1660, 90, 18);
-      ctx.fillStyle = "rgba(0,0,0,.58)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,.2)";
+      ctx.strokeStyle = "rgba(255,255,255,.22)";
       ctx.stroke();
       ctx.fillStyle = "#fff8e8";
-      ctx.font = "800 38px Noto Sans KR, Segoe UI, sans-serif";
+      ctx.font = "900 38px Segoe UI, Noto Sans KR, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(text, 960, 980);
+      ctx.fillText(s.line, W / 2, 962);
       ctx.restore();
     }
 
     function render(now) {
-      const dt = Math.min(.05, (now - state.last) / 1000);
+      const dt = Math.min(.08, (now - state.last) / 1000);
       state.last = now;
       if (state.playing) {
-        state.t = (state.t + dt) % DURATION;
-        scrub.value = String(Math.round(state.t / DURATION * 1000));
+        const speed = state.demo ? 4 : 1;
+        state.t += dt * speed;
+        if (state.t >= DURATION) {
+          state.t = DURATION;
+          state.playing = false;
+          document.getElementById("play").textContent = "재생";
+        }
+        document.getElementById("scrub").value = state.t;
       }
+      const s = activeScene();
+      const p = sceneProgress(s);
+      const cam = cameraFor(s, p);
       ctx.clearRect(0, 0, W, H);
-      drawBackground(state.t);
-      drawPaths();
-      drawStars(state.t);
-      drawZumu(state.t);
-      drawMochi(state.t);
-      drawSubtitles(state.t);
+      coverImage(images[s.img], cam.x, cam.y, cam.scale, cam.rot);
+      drawGrade(state.t, s, p);
+      drawParticles(state.t, s, p);
+      drawMotionNotes(s, p);
+      drawSubtitle(s);
+      updateUi(s);
       requestAnimationFrame(render);
     }
 
-    function speak(character, text) {
+    function cameraFor(s, p) {
+      const ep = ease(p);
+      const configs = {
+        "01": { x: -90 + 160 * ep, y: 20 - 45 * ep, scale: 1.04 + .08 * ep, rot: 0 },
+        "02": { x: 60 - 110 * ep, y: -20, scale: 1.09 + .06 * Math.sin(p * Math.PI), rot: .004 * Math.sin(state.t * 2) },
+        "03": { x: -120 + 220 * ep, y: 10, scale: 1.12, rot: .008 * Math.sin(state.t * 4) },
+        "04": { x: 20, y: -10 + 36 * ep, scale: 1.06 + .12 * ep, rot: 0 },
+        "05": { x: -80 + 110 * ep, y: -25, scale: 1.07 + .06 * ep, rot: 0 },
+        "06": { x: 10, y: -40, scale: 1.18 + .04 * ep, rot: 0 }
+      };
+      return configs[s.id];
+    }
+
+    function updateUi(s) {
+      document.getElementById("timecode").textContent = `${format(state.t)} / 03:00`;
+      document.getElementById("shotBadge").textContent = `EP001 · SHOT ${s.id} · ${s.title}`;
+      document.getElementById("modeBadge").textContent = state.demo ? "45초 빠른 검수" : "렌더 목표 품질";
+      scenes.forEach((_, i) => document.getElementById(`scene-${i}`).classList.toggle("active", scenes[i] === s));
+    }
+
+    let audioCtx;
+    function ensureAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+    function tone(freq, dur, type = "sine", gain = .06, delay = 0) {
+      ensureAudio();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0, audioCtx.currentTime + delay);
+      g.gain.linearRampToValueAtTime(gain, audioCtx.currentTime + delay + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + delay + dur);
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start(audioCtx.currentTime + delay);
+      o.stop(audioCtx.currentTime + delay + dur + .04);
+    }
+    function playSfx(kind = "mix") {
+      ensureAudio();
+      if (kind === "door" || kind === "mix") {
+        tone(620, .18, "triangle", .045, 0);
+        tone(980, .22, "triangle", .035, .07);
+      }
+      if (kind === "step" || kind === "mix") {
+        tone(120, .07, "sine", .08, .28);
+        tone(145, .06, "sine", .065, .52);
+      }
+      if (kind === "star" || kind === "mix") {
+        [1040, 1310, 1560].forEach((f, i) => tone(f, .32, "sine", .035, .72 + i * .08));
+      }
+    }
+
+    function speakLine(character, text) {
       if (!("speechSynthesis" in window)) return;
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "ko-KR";
       const voices = speechSynthesis.getVoices();
       u.voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("ko")) || voices[0] || null;
-      const p = {
-        mochi: [1.25, .92],
-        zumu: [1.5, 1.18],
-        gizo: [1.05, .86],
-        piri: [1.35, .78],
-        pofu: [1.22, .98]
-      }[character] || [1, 1];
-      u.pitch = p[0];
-      u.rate = p[1];
+      const profiles = {
+        mochi: { pitch: 1.28, rate: .88 },
+        zumu: { pitch: 1.55, rate: 1.14 },
+        gizo: { pitch: 1.08, rate: .82 },
+        piri: { pitch: 1.36, rate: .76 },
+        pofu: { pitch: 1.22, rate: .96 }
+      };
+      const p = profiles[character] || profiles.mochi;
+      u.pitch = p.pitch;
+      u.rate = p.rate;
       speechSynthesis.speak(u);
+    }
+    window.speakLine = speakLine;
+
+    function playVoiceSequence() {
+      speechSynthesis.cancel();
+      const lines = scenes.map(s => s.voice);
+      let delay = 0;
+      lines.forEach(([c, text]) => {
+        setTimeout(() => speakLine(c, text), delay);
+        delay += Math.max(1800, text.length * 145);
+      });
     }
 
     document.getElementById("play").onclick = e => {
+      ensureAudio();
+      state.demo = false;
       state.playing = !state.playing;
-      e.currentTarget.textContent = state.playing ? "Pause" : "Play";
+      e.currentTarget.textContent = state.playing ? "정지" : "재생";
     };
-    document.getElementById("debug").onclick = e => {
-      state.debug = !state.debug;
-      e.currentTarget.textContent = `Debug rig: ${state.debug ? "on" : "off"}`;
+    document.getElementById("demo").onclick = () => {
+      ensureAudio();
+      state.demo = true;
+      state.playing = true;
+      state.t = 0;
+      document.getElementById("play").textContent = "정지";
+      playSfx("mix");
     };
-    document.getElementById("paths").onclick = e => {
-      state.paths = !state.paths;
-      e.currentTarget.textContent = `Trajectoires: ${state.paths ? "on" : "off"}`;
+    document.getElementById("voices").onclick = playVoiceSequence;
+    document.getElementById("sfx").onclick = () => playSfx("mix");
+    document.getElementById("overlay").onclick = e => {
+      state.overlay = !state.overlay;
+      e.currentTarget.textContent = state.overlay ? "제작 메모 끄기" : "제작 메모 켜기";
     };
-    document.getElementById("voices").onclick = () => {
-      const lines = [
-        ["mochi", "어...? 내 별이 저기에도 있어."],
-        ["zumu", "모찌! 내가 빨리 꺼내올게!"],
-        ["mochi", "잠깐, 너무 빨리 가면..."],
-        ["zumu", "거의 잡았어! 아니, 또 놓쳤어!"],
-        ["mochi", "이번엔 잡지 않을게. 기다릴게."]
-      ];
-      let d = 0;
-      speechSynthesis.cancel();
-      lines.forEach(([c, text]) => {
-        setTimeout(() => speak(c, text), d);
-        d += Math.max(1300, text.length * 115);
-      });
-    };
-    scrub.oninput = e => {
-      state.t = Number(e.target.value) / 1000 * DURATION;
+    document.getElementById("jumpEmotion").onclick = () => {
+      state.t = 82;
       state.playing = false;
-      document.getElementById("play").textContent = "Play";
+      document.getElementById("play").textContent = "재생";
+      document.getElementById("scrub").value = state.t;
+    };
+    document.getElementById("scrub").oninput = e => {
+      state.t = Number(e.target.value);
+      state.playing = false;
+      document.getElementById("play").textContent = "재생";
     };
 
     requestAnimationFrame(render);
