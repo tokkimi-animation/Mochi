@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mochi - validation rig</title>
+  <style>
+    :root {
+      --bg: #070812;
+      --panel: #121a2b;
+      --text: #fff7e8;
+      --muted: #c6cee0;
+      --line: rgba(255,255,255,.16);
+      --gold: #ffd86f;
+      --cyan: #80e5ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 15% 5%, rgba(84,143,255,.22), transparent 32%), var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    main {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(620px, 1fr) 380px;
+      gap: 14px;
+      padding: 14px;
+    }
+    section, aside {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(18,26,43,.98), rgba(8,12,22,.98));
+      overflow: hidden;
+      box-shadow: 0 22px 70px rgba(0,0,0,.4);
+    }
+    video {
+      width: 100%;
+      display: block;
+      background: #050711;
+    }
+    .pad { padding: 16px; }
+    h1 { margin: 0 0 8px; font-size: 25px; line-height: 1.15; }
+    h2 { margin: 18px 0 8px; font-size: 16px; }
+    p, li { color: var(--muted); line-height: 1.5; }
+    a, .pill { color: var(--text); }
+    .pill {
+      display: inline-block;
+      margin: 4px 4px 0 0;
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.055);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .warn {
+      border-left: 3px solid var(--gold);
+      padding: 10px 0 10px 12px;
+      background: rgba(255,216,111,.06);
+    }
+    .links a {
+      display: inline-block;
+      margin: 8px 8px 0 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #23314c;
+      text-decoration: none;
+      font-weight: 800;
+    }
+    @media (max-width: 1000px) {
+      main { grid-template-columns: 1fr; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <video controls playsinline poster="assets/rig_tests/ep001_rig_blocking_thumb.png" src="assets/rig_tests/ep001_rig_blocking.mp4"></video>
+      <div class="pad links">
+        <a href="assets/rig_tests/ep001_rig_blocking.mp4">Ouvrir le MP4 rig</a>
+        <a href="pilot_animatic.html">Retour episode 001</a>
+      </div>
+    </section>
+    <aside class="pad">
+      <h1>Validation rig avant rendu final</h1>
+      <p class="warn">Cette page remplace la mauvaise approche par zone circulaire. Ici les personnages sont reconstruits en parties avec bones, parents et pivots fixes.</p>
+      <h2>Ce qui bouge vraiment</h2>
+      <div>
+        <span class="pill">body</span>
+        <span class="pill">head</span>
+        <span class="pill">horns</span>
+        <span class="pill">upper/lower arms</span>
+        <span class="pill">legs</span>
+        <span class="pill">eyes</span>
+        <span class="pill">mouth</span>
+        <span class="pill">belly star</span>
+        <span class="pill">Zumu tail chain</span>
+      </div>
+      <h2>Comment lire la video</h2>
+      <ul>
+        <li>Au debut, les bones sont visibles pour controler les attaches.</li>
+        <li>Ensuite, les personnages bougent par squelette, pas par deformation globale de l'image.</li>
+        <li>La camera reste presque fixe : la vie doit venir du rig.</li>
+        <li>La voix reste absente tant qu'on n'a pas une vraie voix de personnage.</li>
+      </ul>
+      <h2>Fichiers de rig</h2>
+      <p>Les structures sont dans <b>assets/rigs/mochi_rig.json</b> et <b>assets/rigs/zumu_rig.json</b>. Le rendu est genere par <b>tools/render_rig_blocking.py</b>.</p>
+    </aside>
+  </main>
+</body>
+</html>

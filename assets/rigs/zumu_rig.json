@@ -1,0 +1,20 @@
+{
+  "character": "Zumu",
+  "style": "soft_plush_2d_rig",
+  "bones": [
+    {"name": "root", "parent": null, "x": 0, "y": 0, "length": 0},
+    {"name": "body", "parent": "root", "x": 0, "y": 0, "length": 76},
+    {"name": "star_mark", "parent": "body", "x": -18, "y": -48, "length": 0},
+    {"name": "eye_left", "parent": "body", "x": -24, "y": -10, "length": 0},
+    {"name": "eye_right", "parent": "body", "x": 24, "y": -10, "length": 0},
+    {"name": "mouth", "parent": "body", "x": 0, "y": 28, "length": 0},
+    {"name": "cheek_left", "parent": "body", "x": -45, "y": 18, "length": 0},
+    {"name": "cheek_right", "parent": "body", "x": 45, "y": 18, "length": 0},
+    {"name": "stub_arm_left", "parent": "body", "x": -58, "y": 10, "length": 32},
+    {"name": "stub_arm_right", "parent": "body", "x": 58, "y": 10, "length": 32},
+    {"name": "tail_01", "parent": "body", "x": -64, "y": 20, "length": 84},
+    {"name": "tail_02", "parent": "tail_01", "x": -78, "y": 8, "length": 84},
+    {"name": "tail_03", "parent": "tail_02", "x": -78, "y": 8, "length": 84},
+    {"name": "tail_sparkles", "parent": "tail_03", "x": -70, "y": 0, "length": 0}
+  ]
+}
