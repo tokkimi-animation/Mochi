@@ -8,3 +8,6 @@ exports/ep001_production_clean_10fps/voices/
 exports/ep001_production_clean_10fps/*.mp4
 exports/ep001_production_clean_10fps/*.wav
 exports/ep001_production_clean_10fps/*.m4a
+exports/ep001_phrase_matched_10fps/frames/
+exports/ep001_phrase_matched_10fps/*.mp4
+exports/ep001_phrase_matched_10fps/*.wav

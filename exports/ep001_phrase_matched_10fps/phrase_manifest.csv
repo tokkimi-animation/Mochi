@@ -1,0 +1,37 @@
+﻿phrase,start,end,speaker,text_ko,source,keyframe,action
+1,0.0,4.4,Mochi,"여기 봐, 주무. 밤인데 편의점이 별처럼 빛나.",kf_001_store_wide.png,phrase_01_mochi.jpg,Mochi notices the glowing Korean convenience store sign in the rain.
+2,4.4,8.0,Zumu,"와아, 간판에 작은 별이 숨어 있어!",kf_001_store_wide.png,phrase_02_zumu.jpg,Cut toward the sign and warm star bulbs above the store.
+3,8.0,11.5,Mochi,"비 냄새도 나고, 따뜻한 우유 냄새도 나.",kf_002_store_wide_alt.png,phrase_03_mochi.jpg,"Mochi sniffs the warm air at the doorway, chest star glowing softly."
+4,11.5,16.4,Zumu,그럼 조심히 들어가 보자. 내 꼬리빛은 약하게 켤게.,kf_005_door_meeting.png,phrase_04_zumu.jpg,Zumu floats closer with a dim blue comet tail.
+5,16.4,20.0,Mochi,"잠깐, 문 위에서 뭔가 반짝였어.",kf_006_door_meeting_alt.png,phrase_05_mochi.jpg,Mochi looks up at the automatic door sensor.
+6,20.0,24.2,Zumu,센서야. 그런데 오늘은 별가루를 먹은 것 같아.,kf_006_door_meeting_alt.png,phrase_06_zumu.jpg,Zumu circles the sensor as gold dust flickers.
+7,24.2,27.6,Mochi,"문아, 우리를 놀라게 하지 말아 줘.",kf_006_door_meeting_alt.png,phrase_07_mochi.jpg,"Mochi raises a paw toward the door, asking gently."
+8,27.6,33.0,Zumu,"괜찮아, 내가 먼저 살짝 날아가 볼게.",kf_005_door_meeting.png,phrase_08_zumu.jpg,Zumu flies forward past the glass door.
+9,33.0,36.6,Mochi,앗! 별조각들이 컵라면 쪽으로 도망가!,kf_007_star_chase.png,phrase_09_mochi.jpg,Mochi reacts as star pieces bounce toward ramyeon shelves.
+10,36.6,42.0,Zumu,잡자! 하지만 진열대는 건드리지 않기!,kf_007_star_chase.png,phrase_10_zumu.jpg,Zumu leads the chase without knocking products down.
+11,42.0,45.8,Mochi,바닥이 미끄러워. 천천히 가야 해.,kf_007_star_chase.png,phrase_11_mochi.jpg,Mochi slows down on the shiny wet floor.
+12,45.8,52.4,Zumu,"좋아, 속도 줄일게. 반짝임만 따라와.",kf_007_star_chase.png,phrase_12_zumu.jpg,Zumu makes a slower blue trail.
+13,52.4,55.6,Mochi,저 작은 별은 왜 떨고 있을까?,kf_008_emotional_pause.png,phrase_13_mochi.jpg,Mochi sees a tiny star trembling near the door.
+14,55.6,62.0,Zumu,너무 밝은 불빛이 무서웠나 봐.,kf_008_emotional_pause.png,phrase_14_zumu.jpg,"Zumu lowers his body and tail light, trying not to scare it."
+15,62.0,65.8,Mochi,괜찮아. 우리는 기다릴 수 있어.,kf_008_emotional_pause.png,phrase_15_mochi.jpg,"Mochi breathes gently, small lights gathering around his cheeks and chest."
+16,65.8,72.0,Zumu,내 꼬리빛도 작게 만들게. 이렇게.,kf_005_door_meeting.png,phrase_16_zumu.jpg,"Zumu demonstrates a smaller, softer comet tail."
+17,72.0,75.4,Mochi,"봐, 조금씩 다시 빛나고 있어.",kf_008_emotional_pause.png,phrase_17_mochi.jpg,The tiny star glows again while Mochi watches softly.
+18,75.4,82.0,Zumu,좋아. 이제 별들이 줄을 서면 문을 통과할 수 있어.,kf_006_door_meeting_alt.png,phrase_18_zumu.jpg,Zumu points the star pieces toward the automatic door path.
+19,82.0,85.8,Mochi,문이 열릴 때마다 바람이 살짝 불어.,kf_006_door_meeting_alt.png,phrase_19_mochi.jpg,Mochi notices the air rhythm from the sliding door.
+20,85.8,93.0,Zumu,"그 바람을 박자로 쓰자. 하나, 둘, 반짝!",kf_006_door_meeting_alt.png,phrase_20_zumu.jpg,Zumu turns the door rhythm into a little game.
+21,93.0,96.4,Mochi,"작은 별들아, 너무 서두르지 마.",kf_008_emotional_pause.png,phrase_21_mochi.jpg,Mochi speaks softly to the tiny star pieces.
+22,96.4,103.0,Zumu,내 푸른 길 위로 천천히 오면 돼.,kf_005_door_meeting.png,phrase_22_zumu.jpg,Zumu paints a blue glowing path in the air.
+23,103.0,106.8,Mochi,"밖은 차갑지만, 여기 빛은 따뜻해.",kf_001_store_wide.png,phrase_23_mochi.jpg,Cutaway to warm store light and cold rain outside.
+24,106.8,113.0,Zumu,그래서 별들이 길을 잃지 않는 거야.,kf_001_store_wide.png,phrase_24_zumu.jpg,The sign star reflects on the wet pavement like a guide.
+25,113.0,116.8,Mochi,마지막 별이 라면 기계 뒤에 숨어 있어.,kf_007_star_chase.png,phrase_25_mochi.jpg,Mochi spots the last star near the hot water machine.
+26,116.8,123.0,Zumu,뜨거운 물 소리가 커서 놀랐나 봐.,kf_008_emotional_pause.png,phrase_26_zumu.jpg,Zumu understands why the little star hid.
+27,123.0,127.0,Mochi,내 손 위에 앉아도 괜찮아. 아주 천천히.,kf_008_emotional_pause.png,phrase_27_mochi.jpg,"Mochi offers his paw, surrounded by small warm lights."
+28,127.0,133.0,Zumu,모치 손은 따뜻해. 나도 옆에서 지켜볼게.,kf_008_emotional_pause.png,phrase_28_zumu.jpg,"Zumu stays beside Mochi, calm and protective."
+29,133.0,136.8,Mochi,이제 모두 함께 나갈 준비 됐어?,kf_005_door_meeting.png,phrase_29_mochi.jpg,Mochi looks to the group of star pieces near the door.
+30,136.8,144.4,Zumu,"응! 파란 길을 만들게. 반짝반짝, 따라와!",kf_005_door_meeting.png,phrase_30_zumu.jpg,Zumu creates the final blue light road outside.
+31,144.4,148.2,Mochi,"문이 열린다. 하나씩, 조심조심.",kf_006_door_meeting_alt.png,phrase_31_mochi.jpg,The automatic door opens and Mochi counts the stars out.
+32,148.2,156.2,Zumu,좋아! 모두 밤하늘 쪽으로 올라가고 있어!,kf_006_door_meeting_alt.png,phrase_32_zumu.jpg,Zumu watches the star pieces rise into the rainy night.
+33,156.2,160.2,Mochi,간판의 별도 더 환해졌어.,kf_001_store_wide.png,phrase_33_mochi.jpg,The store sign star glows brighter.
+34,160.2,168.4,Zumu,오늘 편의점은 별들의 정류장이었네.,kf_001_store_wide.png,phrase_34_zumu.jpg,Wide warm shot of the store as the rain calms.
+35,168.4,172.4,Mochi,"주무, 내일도 같이 반짝임을 찾아볼까?",kf_008_emotional_pause.png,phrase_35_mochi.jpg,Mochi smiles softly with small lights around him.
+36,172.4,180.0,Zumu,당연하지. 모치랑 가면 길이 무섭지 않아.,kf_008_emotional_pause.png,phrase_36_zumu.jpg,Zumu smiles back as the final star dust fades.
