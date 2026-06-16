@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>모찌의 모험 - 검수 프리뷰</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10131a;
+      --panel: #181d27;
+      --panel-2: #202838;
+      --text: #f6f1e8;
+      --muted: #b9c2d6;
+      --line: rgba(255,255,255,.14);
+      --gold: #ffd66b;
+      --mint: #80e0c5;
+      --blue: #8cc9ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+      background: radial-gradient(circle at top left, #26364e, var(--bg) 42%);
+      color: var(--text);
+    }
+    header {
+      min-height: 72vh;
+      display: grid;
+      align-items: end;
+      padding: 48px min(7vw, 88px);
+      background:
+        linear-gradient(to top, rgba(16,19,26,1), rgba(16,19,26,.25)),
+        url("assets/reference/environment_variety_concept_board_ko.png") center/cover no-repeat;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 7vw, 96px);
+      letter-spacing: 0;
+      line-height: 1;
+      text-shadow: 0 10px 36px rgba(0,0,0,.45);
+    }
+    header p {
+      max-width: 820px;
+      font-size: 20px;
+      line-height: 1.55;
+      color: var(--text);
+      text-shadow: 0 3px 18px rgba(0,0,0,.55);
+    }
+    main { padding: 32px min(7vw, 88px) 72px; }
+    section { margin-top: 44px; }
+    h2 { font-size: 28px; margin: 0 0 18px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 42px rgba(0,0,0,.22);
+    }
+    .card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      background: #0b0d12;
+    }
+    .card .body { padding: 16px; }
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .pillrow { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.05);
+    }
+    .script {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      line-height: 1.72;
+      color: #eef3ff;
+      white-space: pre-wrap;
+    }
+    .episodes {
+      columns: 2;
+      column-gap: 32px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    @media (max-width: 760px) {
+      header { min-height: 58vh; padding: 32px 20px; }
+      main { padding: 24px 20px 56px; }
+      .episodes { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>모찌의 모험</h1>
+      <p>한국의 편의점, 버스정류장, 한강, 문구점 같은 일상 공간에 별빛 판타지가 스며드는 3분 애니메이션 시리즈. 대상은 6-17세, 목소리는 모두 어린 캐릭터 톤으로 유지.</p>
+    </div>
+  </header>
+  <main>
+    <section>
+      <h2>검수 포인트</h2>
+      <div class="pillrow">
+        <span class="pill">100편 / 각 3분</span>
+        <span class="pill">전체 한국어</span>
+        <span class="pill">한국 장소감</span>
+        <span class="pill">캐릭터별 고정 목소리</span>
+        <span class="pill">플러시 3D 애니메이션</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>캐릭터 비주얼</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="assets/characters/mochi_animation_reference_sheet_ko.png" alt="모찌 애니메이션 레퍼런스">
+          <div class="body"><h3>모찌</h3><p>턴어라운드, 표정, 입 모양, 호흡, 액션 포즈 검수용.</p></div>
+        </article>
+        <article class="card">
+          <img src="assets/characters/moonlings_supporting_cast_sheet_ko.png" alt="문링즈 조연 캐릭터">
+          <div class="body"><h3>주무, 기조, 피리, 포푸</h3><p>각 캐릭터의 고유 실루엣, 표정, 액션, 고유 효과.</p></div>
+        </article>
+        <article class="card">
+          <img src="assets/characters/mochi_reference.png" alt="모찌 원본 참고">
+          <div class="body"><h3>원본 모찌 참고</h3><p>흰 플러시 몸, 초승달 뿔, 배의 별, 따뜻한 눈.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>배경 방향</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="assets/reference/environment_variety_concept_board_ko.png" alt="한국어 배경 콘셉트 보드">
+          <div class="body"><h3>다양한 장소</h3><p>한 가지 배경 반복 없이, 편마다 다른 장소 규칙과 색감.</p></div>
+        </article>
+        <article class="card">
+          <img src="assets/reference/decor_lotus_star_lake.png" alt="별빛 연꽃 호수">
+          <div class="body"><h3>판타지 레퍼런스</h3><p>별빛, 물 반사, 부드러운 플러시 세계의 감정 표현.</p></div>
+        </article>
+        <article class="card">
+          <img src="assets/reference/decor_leaf_galaxy_pond.png" alt="잎 우산과 은하 연못">
+          <div class="body"><h3>자연 + 별빛</h3><p>한국 일상 배경 위에 이런 감성 레이어를 얹는 방향.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>에피소드 샘플</h2>
+      <div class="script">001. 편의점 자동문에 갇힌 별빛
+
+장소: 밤 편의점
+등장: 모찌, 주무
+핵심 주제: 약속을 지키는 법
+
+한국의 '밤 편의점'에서 '가상의 편의점 간판'에 얽힌 작은 별빛 사건이 벌어진다.
+모찌는 너무 빨리 판단하고, 주무는 빠른 성격 때문에 사건을 더 키운다.
+마지막에는 문제의 원인이 물건이 아니라 모찌의 선택이었다는 것을 깨닫는다.
+
+목소리: 모찌는 맑고 따뜻하게, 주무는 빠르고 반짝이게. 둘 다 어린 캐릭터 목소리.</div>
+    </section>
+
+    <section>
+      <h2>처음 20편</h2>
+      <div class="episodes">
+        001. 편의점 자동문에 갇힌 별빛<br>
+        002. 삼각김밥 속 작은 지도<br>
+        003. 컵라면 물이 멈춘 밤<br>
+        004. 바나나우유가 사라진 이유<br>
+        005. 교통카드의 세 번째 삑<br>
+        006. 비 오는 버스정류장<br>
+        007. 학교 앞 문구점의 별 스티커<br>
+        008. 뽑기 기계의 거짓 소원<br>
+        009. 한강 라면 기계의 비밀<br>
+        010. 횡단보도 물웅덩이의 문<br>
+        011. 아파트 놀이터의 늦은 약속<br>
+        012. 경비실 불빛 아래 그림자<br>
+        013. 분식집 떡볶이 김 속 목소리<br>
+        014. 붕어빵 포장마차의 반쪽 별<br>
+        015. 지하철 입구의 바람 계단<br>
+        016. 코인노래방 복도의 무음 노래<br>
+        017. PC방 간판 아래 멈춘 시간<br>
+        018. 옥상 빨래줄의 달빛 매듭<br>
+        019. 시장 골목의 사라진 가격표<br>
+        020. 카페 골목의 따뜻한 창문
+      </div>
+    </section>
+  </main>
+</body>
+</html>
