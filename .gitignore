@@ -11,3 +11,7 @@ exports/ep001_production_clean_10fps/*.m4a
 exports/ep001_phrase_matched_10fps/frames/
 exports/ep001_phrase_matched_10fps/*.mp4
 exports/ep001_phrase_matched_10fps/*.wav
+exports/ep001_frame_by_frame_sheets/frames/
+exports/ep001_frame_by_frame_sheets/*.mp4
+exports/ep001_frame_by_frame_sheets/*.wav
+exports/ep001_phrase_sheets_36/poses_360/
