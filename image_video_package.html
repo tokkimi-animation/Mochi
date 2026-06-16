@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mochi - package image-to-video</title>
+  <style>
+    body { margin: 0; background: #070812; color: #fff7e8; font-family: "Segoe UI", Arial, sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; padding: 18px; }
+    h1 { margin: 0 0 8px; }
+    p { color: #c6cee0; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .card { border: 1px solid rgba(255,255,255,.16); border-radius: 8px; background: #111827; overflow: hidden; }
+    img { width: 100%; display: block; }
+    .pad { padding: 12px; }
+    a { color: #fff7e8; font-weight: 800; }
+    code { color: #ffd86f; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Package ElevenLabs / image-to-video</h1>
+    <p>Utilise ces images comme clips courts. Ne tente pas de faire 3 minutes en une seule generation. Chaque image doit devenir un clip de 6-8 secondes avec le prompt du fichier <code>exports/elevenlabs_ep001_image_video/PROMPTS.md</code>.</p>
+    <p><a href="https://elevenlabs.io/app/image-video?modality=image">Ouvrir ElevenLabs image-video</a></p>
+    <p><a href="exports/elevenlabs_ep001_image_video/PROMPTS.md">Lire les prompts</a></p>
+    <div class="grid">
+      <div class="card"><img src="exports/elevenlabs_ep001_image_video/ep001_shot_contact_sheet.png"><div class="pad">Contact sheet des plans EP001</div></div>
+      <div class="card"><img src="exports/elevenlabs_ep001_image_video/character_reference_mochi.png"><div class="pad">Reference Mochi</div></div>
+      <div class="card"><img src="exports/elevenlabs_ep001_image_video/character_reference_zumu.png"><div class="pad">Reference Zumu</div></div>
+    </div>
+  </main>
+</body>
+</html>
