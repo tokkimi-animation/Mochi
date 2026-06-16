@@ -15,3 +15,6 @@ exports/ep001_frame_by_frame_sheets/frames/
 exports/ep001_frame_by_frame_sheets/*.mp4
 exports/ep001_frame_by_frame_sheets/*.wav
 exports/ep001_phrase_sheets_36/poses_360/
+exports/ep001_phrase_sheets_36/frames_1800/
+exports/ep001_phrase_sheets_36/*.mp4
+exports/ep001_phrase_sheets_36/*.wav
